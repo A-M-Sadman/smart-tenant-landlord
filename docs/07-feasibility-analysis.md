@@ -12,7 +12,7 @@
 
 ## Technical Feasibility
 - **Frontend:** React.js supports modular, component-based UI with role-aware routing and responsive design.
-- **Backend:** Django REST Framework provides rapid API development, built-in ORM, serializers, and permission classes ideal for role-based access control.
+- **Backend:** Fast API Framework provides rapid API development, built-in ORM, serializers, and permission classes ideal for role-based access control.
 - **Database:** PostgreSQL offers relational integrity for agreements, rent records, and maintenance assignments — all of which require structured, auditable data.
 - **Auth:** JWT provides stateless, scalable authentication suitable for four distinct user roles without server-side session storage.
 - **Version Control & PM:** GitHub Issues + GitHub Projects Kanban board provides full traceability from task to commit.
