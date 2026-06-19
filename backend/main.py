@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.database import Base, engine
+from app.routers import auth
+
+# Create tables (dev only — use Alembic in prod)
+# Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="Smart Tenant-Landlord Management Platform",
     version="1.0.0",
@@ -10,13 +16,16 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173"],  # Vite dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Routers
+app.include_router(auth.router, prefix="/api/v1")
+
 
 @app.get("/")
 def root():
-    return {"message": "Smart Tenant-Landlord API is running"}
+    return {"message": "Smart Tenant-Landlord API is running."}
