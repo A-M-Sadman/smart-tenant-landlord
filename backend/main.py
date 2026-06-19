@@ -29,3 +29,9 @@ app.include_router(auth.router, prefix="/api/v1")
 @app.get("/")
 def root():
     return {"message": "Smart Tenant-Landlord API is running."}
+
+
+# To activate the virtual environment, 
+# Run the following command in your terminal: .\venv\Scripts\activate
+# Then run backend: uvicorn main:app --reload
+# Uvicorn running on: http://127.0.0.1:8000
