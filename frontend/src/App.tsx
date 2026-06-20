@@ -12,6 +12,15 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          
+          <Route
+            path="/landlord/*"
+            element={
+              <ProtectedRoute roles={["landlord"]}>
+                <div>Landlord Dashboard (coming soon)</div>
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/tenant/*"
             element={
