@@ -1,9 +1,31 @@
+﻿backend/venv/
+frontend/node_modules/
+frontend/.vite/
+__pycache__/
+
+# Python virtual environment
 venv/
+env/
+ENV/
+.venv
+
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
-.env
-*.egg-info/
-dist/
-build/
-.pytest_cache/
+*.pyd
+
+# Frontend dependencies
+frontend/node_modules/
+frontend/.vite/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
