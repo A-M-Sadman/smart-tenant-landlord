@@ -1,19 +1,34 @@
-﻿backend/venv/
-frontend/node_modules/
-frontend/.vite/
-__pycache__/
-
 # Python virtual environment
 venv/
 env/
 ENV/
 .venv
+backend/venv/
 
 # Python cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Environment variables
+.env
+
+# Python build
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+
+# Database
+*.db
+
+# Alembic
+alembic/__pycache__/
+alembic/versions/__pycache__/
+app/models/__pycache__/
 
 # Frontend dependencies
 frontend/node_modules/

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.database import Base, engine
 from app.routers import auth
+from app.routers import property as property_router
 
 # Create tables (dev only — use Alembic in prod)
 # Base.metadata.create_all(bind=engine)
@@ -24,6 +25,7 @@ app.add_middleware(
 
 # Routers
 app.include_router(auth.router, prefix="/api/v1")
+app.include_router(property_router.router, prefix="/api/v1")
 
 
 @app.get("/")
