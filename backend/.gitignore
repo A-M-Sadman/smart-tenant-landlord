@@ -30,6 +30,15 @@ alembic/__pycache__/
 alembic/versions/__pycache__/
 app/models/__pycache__/
 
+#app
+app/__pycache__/
+app/models/__pycache__/
+app/schemas/__pycache__/
+app/services/__pycache__/
+app/core/__pycache__/
+app/routers/__pycache__/
+
+
 # Frontend dependencies
 frontend/node_modules/
 frontend/.vite/
