@@ -1,8 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./pages/auth/ProtectedRoute";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import ProtectedRoute from "./pages/auth/ProtectedRoute";
+import DashboardLayout from "./components/landlord/DashboardLayout";
+import DashboardHome from "./pages/landlord/DashboardHome";
+import PropertiesPage from "./pages/landlord/PropertiesPage";
+import PropertyForm from "./pages/landlord/PropertyForm";
+import PropertyDetail from "./pages/landlord/PropertyDetail";
+import UnitForm from "./pages/landlord/UnitForm";
 
 function App() {
   return (
@@ -12,35 +18,42 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* Landlord routes */}
           <Route
-            path="/admin/*"
+            path="/landlord"
             element={
-              <ProtectedRoute roles={["admin"]}>
-                <div>Admin Dashboard (coming soon)</div>
+              <ProtectedRoute roles={["landlord", "admin"]}>
+                <DashboardLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/landlord/*"
-            element={
-              <ProtectedRoute roles={["landlord"]}>
-                <div>Landlord Dashboard (coming soon)</div>
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardHome />} />
+            <Route path="properties" element={<PropertiesPage />} />
+            <Route path="properties/new" element={<PropertyForm />} />
+            <Route path="properties/:id" element={<PropertyDetail />} />
+            <Route path="properties/:id/edit" element={<PropertyForm />} />
+            <Route path="properties/:id/units/new" element={<UnitForm />} />
+            <Route path="properties/:id/units/:unitId/edit" element={<UnitForm />} />
+          </Route>
+
+          {/* Tenant placeholder */}
           <Route
             path="/tenant/*"
             element={
               <ProtectedRoute roles={["tenant"]}>
-                <div>Tenant Dashboard (coming soon)</div>
+                <div style={{ padding: "2rem" }}>Tenant Dashboard (coming soon)</div>
               </ProtectedRoute>
             }
           />
+
+          {/* Maintenance placeholder */}
           <Route
             path="/maintenance/*"
             element={
               <ProtectedRoute roles={["maintenance_staff"]}>
-                <div>Maintenance Dashboard (coming soon)</div>
+                <div style={{ padding: "2rem" }}>Maintenance Dashboard (coming soon)</div>
               </ProtectedRoute>
             }
           />
