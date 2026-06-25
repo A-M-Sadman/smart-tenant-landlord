@@ -9,6 +9,9 @@ import PropertiesPage from "./pages/landlord/PropertiesPage";
 import PropertyForm from "./pages/landlord/PropertyForm";
 import PropertyDetail from "./pages/landlord/PropertyDetail";
 import UnitForm from "./pages/landlord/UnitForm";
+import TenantLayout from "./components/tenant/TenantLayout";
+import TenantHome from "./pages/tenant/TenantHome";
+import TenantProfilePage from "./pages/tenant/TenantProfilePage";
 
 function App() {
   return (
@@ -38,15 +41,19 @@ function App() {
             <Route path="properties/:id/units/:unitId/edit" element={<UnitForm />} />
           </Route>
 
-          {/* Tenant placeholder */}
+          {/* Tenant routes */}
           <Route
-            path="/tenant/*"
+            path="/tenant"
             element={
               <ProtectedRoute roles={["tenant"]}>
-                <div style={{ padding: "2rem" }}>Tenant Dashboard (coming soon)</div>
+                <TenantLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<TenantHome />} />
+            <Route path="profile" element={<TenantProfilePage />} />
+          </Route>
 
           {/* Maintenance placeholder */}
           <Route
