@@ -30,7 +30,14 @@ export default function PropertyForm() {
     setError("");
     setLoading(true);
     try {
-      const payload = { name: form.name, address: form.address, city: form.city, district: form.district, description: form.description || undefined };
+      const payload = {
+        name: form.name,
+        address: form.address,
+        city: form.city,
+        district: form.district,
+        description: form.description || undefined,
+        image_url: form.image_url || undefined, 
+      };
       if (isEdit && id) {
         await propertyApi.update(id, payload);
       } else {

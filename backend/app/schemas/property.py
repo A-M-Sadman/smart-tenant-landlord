@@ -18,6 +18,7 @@ class PropertyUpdate(BaseModel):
     city: Optional[str] = None
     district: Optional[str] = None
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class PropertyResponse(BaseModel):
@@ -29,6 +30,7 @@ class PropertyResponse(BaseModel):
     district: str
     total_units: int
     description: Optional[str] = None
+    image_url: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 

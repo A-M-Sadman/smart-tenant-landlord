@@ -284,7 +284,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
+
 
 .property-card-header h3, .unit-card-header h3 {
   font-size: 1rem;
@@ -364,6 +366,14 @@
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+}
+
+.image-upload-preview {
+  width: 120px !important;
+  height: 120px !important;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
 }
 
 /* ── Empty state ── */
