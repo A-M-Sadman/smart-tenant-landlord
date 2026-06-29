@@ -486,3 +486,8 @@
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
+
+
+.image-upload-wrapper { display: flex; flex-direction: column; gap: 0.5rem; }
+.image-upload-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e0e0e0; }
+.upload-error { color: #dc2626; font-size: 0.82rem; margin: 0; }
