@@ -18,6 +18,7 @@ def create_property(db: Session, data: PropertyCreate, landlord_id: uuid.UUID) -
         city=data.city,
         district=data.district,
         description=data.description,
+        image_url=data.image_url,
     )
     db.add(prop)
     db.commit()

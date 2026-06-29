@@ -17,6 +17,7 @@ class Property(Base):
     district = Column(String(100), nullable=False)
     total_units = Column(Integer, nullable=False, default=0)
     description = Column(Text, nullable=True)
+    image_url = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

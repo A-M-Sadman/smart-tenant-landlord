@@ -46,6 +46,13 @@ export default function PropertiesPage() {
                 <h3>{p.name}</h3>
                 <span className="badge badge-blue">{p.total_units} units</span>
               </div>
+              {typeof p.image_url === "string" && p.image_url && (
+                <img
+                  src={p.image_url}
+                  alt={typeof p.name === "string" ? p.name : ""}
+                  style={{ width: "100%", height: "160px", objectFit: "cover", borderRadius: "8px" }}
+                />
+              )}
               <p className="property-address">{p.address}, {p.city}</p>
               <p className="property-district">{p.district}</p>
               {p.description && <p className="property-desc">{p.description}</p>}
