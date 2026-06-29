@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { tenantApi } from "../../api/tenant";
 import type { TenantProfile } from "../../types/tenant";
+import ImageUpload from "../../components/tenant/ImageUpload";
 
 export default function TenantProfilePage() {
   const [profile, setProfile] = useState<TenantProfile | null>(null);
@@ -11,26 +12,21 @@ export default function TenantProfilePage() {
   const [success, setSuccess] = useState("");
 
   const [form, setForm] = useState({
-    nid: "",
-    emergency_contact_name: "",
-    emergency_contact_phone: "",
-    occupation: "",
-    profile_photo_url: "",
+    nid: "", emergency_contact_name: "", emergency_contact_phone: "",
+    occupation: "", profile_photo_url: "",
   });
 
   useEffect(() => {
-    tenantApi.getProfile()
-      .then((p) => {
-        setProfile(p);
-        setForm({
-          nid: p.nid ?? "",
-          emergency_contact_name: p.emergency_contact_name ?? "",
-          emergency_contact_phone: p.emergency_contact_phone ?? "",
-          occupation: p.occupation ?? "",
-          profile_photo_url: p.profile_photo_url ?? "",
-        });
-      })
-      .finally(() => setLoading(false));
+    tenantApi.getProfile().then((p) => {
+      setProfile(p);
+      setForm({
+        nid: p.nid ?? "",
+        emergency_contact_name: p.emergency_contact_name ?? "",
+        emergency_contact_phone: p.emergency_contact_phone ?? "",
+        occupation: p.occupation ?? "",
+        profile_photo_url: p.profile_photo_url ?? "",
+      });
+    }).finally(() => setLoading(false));
   }, []);
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -38,8 +34,7 @@ export default function TenantProfilePage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError(""); setSuccess("");
     setSaving(true);
     try {
       const updated = await tenantApi.updateProfile({
@@ -74,7 +69,6 @@ export default function TenantProfilePage() {
         )}
       </div>
 
-      {/* Account info card */}
       <div className="profile-card">
         <div className="profile-avatar-section">
           {profile.profile_photo_url ? (
@@ -97,6 +91,14 @@ export default function TenantProfilePage() {
         <div className="form-card" style={{ marginTop: "1.5rem" }}>
           <h3 style={{ marginBottom: "1rem" }}>Edit Details</h3>
           <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Profile Photo</label>
+              <ImageUpload
+                label="Upload Photo"
+                existingUrl={form.profile_photo_url}
+                onUpload={(url) => setForm((prev) => ({ ...prev, profile_photo_url: url }))}
+              />
+            </div>
             <div className="form-row">
               <div className="form-group">
                 <label>NID Number</label>
@@ -116,10 +118,6 @@ export default function TenantProfilePage() {
                 <label>Emergency Contact Phone</label>
                 <input type="tel" value={form.emergency_contact_phone} onChange={set("emergency_contact_phone")} />
               </div>
-            </div>
-            <div className="form-group">
-              <label>Profile Photo URL (optional)</label>
-              <input type="url" value={form.profile_photo_url} onChange={set("profile_photo_url")} placeholder="https://..." />
             </div>
             <div className="form-actions">
               <button type="button" className="btn-secondary" onClick={() => setEditing(false)}>Cancel</button>
