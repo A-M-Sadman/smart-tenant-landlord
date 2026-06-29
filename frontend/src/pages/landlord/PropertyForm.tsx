@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { propertyApi } from "../../api/property";
 import ImageUpload from "../../components/landlord/ImageUpload";
+import ImageUpload from "../../components/landlord/ImageUpload";
 
 export default function PropertyForm() {
   const { id } = useParams();
@@ -11,12 +12,16 @@ export default function PropertyForm() {
   const [form, setForm] = useState({
     name: "", address: "", city: "", district: "", description: "", image_url: "",
   });
+  const [form, setForm] = useState({
+    name: "", address: "", city: "", district: "", description: "", image_url: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (isEdit && id) {
       propertyApi.get(id).then((p) =>
+        setForm({ name: p.name, address: p.address, city: p.city, district: p.district, description: p.description ?? "", image_url: "" })
         setForm({ name: p.name, address: p.address, city: p.city, district: p.district, description: p.description ?? "", image_url: "" })
       );
     }
@@ -40,7 +45,9 @@ export default function PropertyForm() {
       };
       if (isEdit && id) {
         await propertyApi.update(id, payload);
+        await propertyApi.update(id, payload);
       } else {
+        await propertyApi.create(payload);
         await propertyApi.create(payload);
       }
       navigate("/landlord/properties");
@@ -88,7 +95,15 @@ export default function PropertyForm() {
               onUpload={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
             />
           </div>
+          <div className="form-group">
+            <label>Property Image (optional)</label>
+            <ImageUpload
+              label="Upload Property Image"
+              onUpload={(url) => setForm((prev) => ({ ...prev, image_url: url }))}
+            />
+          </div>
           <div className="form-actions">
+            <button type="button" className="btn-secondary" onClick={() => navigate("/landlord/properties")}>Cancel</button>
             <button type="button" className="btn-secondary" onClick={() => navigate("/landlord/properties")}>Cancel</button>
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? "Saving…" : isEdit ? "Save Changes" : "Add Property"}
