@@ -1,4 +1,5 @@
 export interface Property {
+  image_url: import("react").JSX.Element;
   id: string;
   landlord_id: string;
   name: string;
@@ -30,6 +31,7 @@ export interface PropertyUpdate {
 export type UnitStatus = "vacant" | "occupied" | "maintenance";
 
 export interface Unit {
+  is_occupied: any;
   id: string;
   property_id: string;
   unit_number: string;

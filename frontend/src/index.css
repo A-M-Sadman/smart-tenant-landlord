@@ -491,3 +491,261 @@
 .image-upload-wrapper { display: flex; flex-direction: column; gap: 0.5rem; }
 .image-upload-preview { width: 120px; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #e0e0e0; }
 .upload-error { color: #dc2626; font-size: 0.82rem; margin: 0; }
+
+
+
+/* ── Assignment / Search ──────────────────────────────────────── */
+
+.search-results {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 4px;
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.search-result-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background: var(--hover-bg, #f5f5f5);
+}
+
+.search-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.selected-tenant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+}
+
+.selected-tenant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tenant-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tenant-email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.btn-ghost-small {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.btn-ghost-small:hover {
+  background: var(--hover-bg, #f0f0f0);
+}
+
+/* ── Table ───────────────────────────────────────────────────── */
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.data-table th {
+  background: var(--card-bg);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+  background: var(--hover-bg, #fafafa);
+}
+
+.tenant-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── Badges ──────────────────────────────────────────────────── */
+
+.badge-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-secondary {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.badge-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Unit card occupancy ─────────────────────────────────────── */
+
+.unit-occupancy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.occupied-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.occupied-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.occupied-tenant {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+
+.btn-warning-small {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-warning-small:hover {
+  background: #fde68a;
+}
+
+.btn-danger-small {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-danger-small:hover {
+  background: #fecaca;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.modal-sm {
+  max-width: 420px;
+}
+
+
+/* btn-primary-small was missing */
+.btn-primary-small {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-primary-small:hover {
+  background: #1d4ed8;
+}
+
+/* Modal overlay had no background */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
