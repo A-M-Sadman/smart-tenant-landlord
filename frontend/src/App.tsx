@@ -12,6 +12,7 @@ import UnitForm from "./pages/landlord/UnitForm";
 import TenantLayout from "./components/tenant/TenantLayout";
 import TenantHome from "./pages/tenant/TenantHome";
 import TenantProfilePage from "./pages/tenant/TenantProfilePage";
+import AssignmentsPage from './pages/landlord/AssignmentsPage';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="properties/:id/edit" element={<PropertyForm />} />
             <Route path="properties/:id/units/new" element={<UnitForm />} />
             <Route path="properties/:id/units/:unitId/edit" element={<UnitForm />} />
+            <Route path="assignments" element={<AssignmentsPage />} />
           </Route>
 
           {/* Tenant routes */}

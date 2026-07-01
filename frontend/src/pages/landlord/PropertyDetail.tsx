@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { propertyApi } from "../../api/property";
 import type { Property, Unit } from "../../types/property";
+import AssignTenantModal from '../../components/landlord/AssignTenantModal';
+import { getAssignments } from '../../api/assignment';
+
+
 
 const STATUS_COLORS: Record<string, string> = {
   vacant: "badge-green",
@@ -16,12 +20,16 @@ export default function PropertyDetail() {
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteUnitId, setDeleteUnitId] = useState<string | null>(null);
+  const [assigningUnit, setAssigningUnit] = useState<{id: string, unit_number: string} | null>(null);
+  const [occupiedUnitIds, setOccupiedUnitIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!id) return;
-    Promise.all([propertyApi.get(id), propertyApi.listUnits(id)])
-      .then(([prop, units]) => { setProperty(prop); setUnits(units); })
-      .finally(() => setLoading(false));
+    setLoading(true);
+    Promise.all([
+      propertyApi.get(id).then(setProperty),
+      fetchUnits(),
+    ]).finally(() => setLoading(false));
   }, [id]);
 
   const handleDeleteUnit = async () => {
@@ -29,6 +37,23 @@ export default function PropertyDetail() {
     await propertyApi.deleteUnit(id, deleteUnitId);
     setUnits((prev) => prev.filter((u) => u.id !== deleteUnitId));
     setDeleteUnitId(null);
+  };
+
+  
+
+  const fetchUnits = async () => {
+    if (!id) return;
+    const [fetchedUnits, assignments] = await Promise.all([
+      propertyApi.listUnits(id),
+      getAssignments(),  
+    ]);
+    setUnits(fetchedUnits);
+    const occupied = new Set(
+      assignments
+        .filter(a => a.status === 'active')
+        .map(a => a.unit_id)
+    );
+    setOccupiedUnitIds(occupied);
   };
 
   if (loading) return <div className="page"><p>Loading…</p></div>;
@@ -63,7 +88,6 @@ export default function PropertyDetail() {
             <div key={unit.id} className="unit-card">
               <div className="unit-card-header">
                 <h3>Unit {unit.unit_number}</h3>
-                <span className={`badge ${STATUS_COLORS[unit.status]}`}>{unit.status}</span>
               </div>
               <div className="unit-details">
                 {unit.floor != null && <span>Floor {unit.floor}</span>}
@@ -78,6 +102,16 @@ export default function PropertyDetail() {
                 <button className="btn-danger-outline" onClick={() => setDeleteUnitId(unit.id)}>
                   Delete
                 </button>
+              </div>
+              <div className="unit-occupancy">
+                <span className={`badge ${occupiedUnitIds.has(unit.id) ? 'badge-danger' : 'badge-success'}`}>
+                  {occupiedUnitIds.has(unit.id) ? 'Occupied' : 'Vacant'}
+                </span>
+                {!occupiedUnitIds.has(unit.id) && (
+                  <button className="btn-primary-small" onClick={() => setAssigningUnit(unit)}>
+                    Assign Tenant
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -95,6 +129,14 @@ export default function PropertyDetail() {
             </div>
           </div>
         </div>
+      )}
+      {assigningUnit && (
+        <AssignTenantModal
+          unitId={assigningUnit.id}
+          unitNumber={assigningUnit.unit_number}
+          onClose={() => setAssigningUnit(null)}
+          onAssigned={() => { setAssigningUnit(null); fetchUnits(); }}
+        />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 const navItems = [
   { to: "/landlord/dashboard", label: "Dashboard", icon: "⊞" },
   { to: "/landlord/properties", label: "Properties", icon: "🏢" },
+  { to: "/landlord/assignments", label: "Assignments", icon: "👤" },
 ];
 
 export default function DashboardLayout() {
