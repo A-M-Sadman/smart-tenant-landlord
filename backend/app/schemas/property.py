@@ -10,6 +10,7 @@ class PropertyCreate(BaseModel):
     city: str
     district: str
     description: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class PropertyUpdate(BaseModel):
