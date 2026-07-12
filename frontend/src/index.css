@@ -749,3 +749,140 @@
   padding: 40px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
+
+
+/* ── Maintenance cards ───────────────────────────────────────── */
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.maintenance-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.maintenance-card-done {
+  opacity: 0.7;
+}
+
+.maintenance-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.maintenance-card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.maintenance-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.maintenance-card-category {
+  font-size: 0.82rem;
+  color: var(--text-muted, #6b7280);
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.maintenance-card-body {
+  padding-top: 10px;
+  border-top: 1px solid var(--border, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.maintenance-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text, #111827);
+  margin: 0;
+}
+
+.maintenance-notes {
+  background: var(--hover-bg, #f9fafb);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notes-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.maintenance-meta-text {
+  font-size: 0.8rem;
+  color: var(--text-muted, #6b7280);
+  margin: 0;
+}
+
+.maintenance-card-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+/* ── Section headings ────────────────────────────────────────── */
+
+.section {
+  margin-bottom: 32px;
+}
+
+/* ── Additional badges ───────────────────────────────────────── */
+
+.badge-info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ── Form textarea ───────────────────────────────────────────── */
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+
+
+/* ── Success button ──────────────────────────────────────────── */
+
+.btn-success {
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-success:hover {
+  background: #047857;
+}
