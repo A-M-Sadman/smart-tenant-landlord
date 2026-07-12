@@ -13,6 +13,10 @@ import TenantLayout from "./components/tenant/TenantLayout";
 import TenantHome from "./pages/tenant/TenantHome";
 import TenantProfilePage from "./pages/tenant/TenantProfilePage";
 import AssignmentsPage from './pages/landlord/AssignmentsPage';
+import StaffLayout from './components/staff/StaffLayout';
+import StaffDashboardPage from './pages/staff/StaffDashboardPage';
+import TenantMaintenancePage from './pages/tenant/TenantMaintenancePage';
+import LandlordMaintenancePage from './pages/landlord/LandlordMaintenancePage';
 
 function App() {
   return (
@@ -41,6 +45,7 @@ function App() {
             <Route path="properties/:id/units/new" element={<UnitForm />} />
             <Route path="properties/:id/units/:unitId/edit" element={<UnitForm />} />
             <Route path="assignments" element={<AssignmentsPage />} />
+            <Route path="maintenance" element={<LandlordMaintenancePage />} />
           </Route>
 
           {/* Tenant routes */}
@@ -55,6 +60,7 @@ function App() {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<TenantHome />} />
             <Route path="profile" element={<TenantProfilePage />} />
+            <Route path="maintenance" element={<TenantMaintenancePage />} />
           </Route>
 
           {/* Maintenance placeholder */}
@@ -62,10 +68,16 @@ function App() {
             path="/maintenance/*"
             element={
               <ProtectedRoute roles={["maintenance_staff"]}>
-                <div style={{ padding: "2rem" }}>Maintenance Dashboard (coming soon)</div>
+                < StaffLayout />
               </ProtectedRoute>
+              
+              
             }
           />
+          <Route path="/staff" element={<StaffLayout />}>
+            <Route path="dashboard" element={<StaffDashboardPage />} />
+            <Route path="assignments" element={<StaffDashboardPage />} />
+          </Route>  
         </Routes>
       </AuthProvider>
     </BrowserRouter>

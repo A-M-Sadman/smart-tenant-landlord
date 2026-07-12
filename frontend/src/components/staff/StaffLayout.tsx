@@ -2,12 +2,11 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
-  { to: "/tenant/dashboard", label: "Dashboard", icon: "⊞" },
-  { to: "/tenant/profile", label: "My Profile", icon: "👤" },
-  { to: "/tenant/maintenance", label: "Maintenance", icon: "🔧" },
+  { to: "/staff/dashboard", label: "Dashboard", icon: "⊞" },
+  { to: "/staff/assignments", label: "My Assignments", icon: "🔧" },
 ];
 
-export default function TenantLayout() {
+export default function StaffLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -26,7 +25,6 @@ export default function TenantLayout() {
         <nav className="sidebar-nav">
           {navItems.map((item) => (
             <NavLink
-      
               key={item.to}
               to={item.to}
               className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
@@ -41,7 +39,7 @@ export default function TenantLayout() {
             <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
-              <span className="user-role">Tenant</span>
+              <span className="user-role">Maintenance Staff</span>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout}>Sign out</button>

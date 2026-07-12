@@ -1,6 +1,6 @@
 import uuid
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -15,6 +15,8 @@ from app.schemas.maintenance import (
     StaffAssignmentResponse,
 )
 from app.services import maintenance_service
+from app.schemas.assignment import TenantSearchResult
+
 
 router = APIRouter(prefix="/api/v1/maintenance", tags=["Maintenance"])
 
@@ -125,3 +127,21 @@ def update_assignment(
     current_user: User = Depends(staff_user),
 ):
     return maintenance_service.update_staff_assignment(db, assignment_id, data, current_user.id)
+
+
+@router.get("/staff/search", response_model=List[TenantSearchResult])
+def search_staff(
+    email: str = Query(..., min_length=1),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(landlord_user),
+):
+    """Search maintenance staff users by email fragment."""
+    return (
+        db.query(User)
+        .filter(
+            User.role == UserRole.maintenance_staff,
+            User.email.ilike(f"%{email}%"),
+        )
+        .limit(10)
+        .all()
+    )
