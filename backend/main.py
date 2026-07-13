@@ -8,6 +8,8 @@ from app.routers import tenant as tenant_router
 from app.routers import images as images_router
 from app.routers import assignment
 from app.routers import maintenance
+from app.routers import agreement
+
 
 # Create tables (dev only — use Alembic in prod)
 # Base.metadata.create_all(bind=engine)
@@ -34,6 +36,7 @@ app.include_router(tenant_router.router, prefix="/api/v1")
 app.include_router(images_router.router, prefix="/api/v1")
 app.include_router(assignment.router)
 app.include_router(maintenance.router)
+app.include_router(agreement.router)
 
 @app.get("/")
 def root():
