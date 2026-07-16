@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type {
-    MaintenanceRequest,
-    RequestStatus,
-    RequestPriority,
+  MaintenanceRequest,
+  RequestStatus,
+  RequestPriority,
 } from '../../types/maintenance';
 import { getAllRequests, updateRequest, assignStaff } from '../../api/maintenance';
-import { searchTenants } from '../../api/assignment';
 
 const STATUS_BADGE: Record<string, string> = {
   open: 'badge-info',
@@ -25,12 +24,19 @@ const PRIORITY_BADGE: Record<string, string> = {
 const STATUSES: RequestStatus[] = ['open', 'in_progress', 'resolved', 'closed', 'rejected'];
 const PRIORITIES: RequestPriority[] = ['low', 'medium', 'high', 'urgent'];
 
+interface StaffResult {
+  id: string;
+  email: string;
+  full_name: string | null;
+}
+
 interface AssignModalState {
   requestId: string;
   staffEmail: string;
   staffId: string;
+  staffName: string;
   notes: string;
-  results: { id: string; email: string; full_name: string | null }[];
+  results: StaffResult[];
   searching: boolean;
   error: string;
   submitting: boolean;
@@ -43,6 +49,8 @@ export default function LandlordMaintenancePage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [assignModal, setAssignModal] = useState<AssignModalState | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [search, setSearch] = useState('');
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetchRequests();
@@ -84,38 +92,29 @@ export default function LandlordMaintenancePage() {
     }
   }
 
-  async function handleStaffSearch(email: string) {
+  function handleStaffEmailChange(email: string) {
     if (!assignModal) return;
-    setAssignModal({ ...assignModal, staffEmail: email, searching: true, staffId: '', results: [] });
-    try {
-      // reuse tenant search but filter for maintenance_staff — backend handles role
-      const results = await fetch(
-        `http://localhost:8000/api/v1/tenants/search?email=${encodeURIComponent(email)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
+    setAssignModal({ ...assignModal, staffEmail: email, staffId: '', staffName: '', results: [], searching: email.length >= 2 });
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (email.length < 2) return;
+
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8000/api/v1/maintenance/staff/search?email=${encodeURIComponent(email)}`,
+          { headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setAssignModal(prev => prev ? { ...prev, results: data, searching: false } : null);
+        } else {
+          setAssignModal(prev => prev ? { ...prev, results: [], searching: false } : null);
         }
-      );
-      // We search all users; backend only returns maintenance_staff via a separate search
-      // Use the general staff search instead
-      const staffRes = await fetch(
-        `http://localhost:8000/api/v1/staff/search?email=${encodeURIComponent(email)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
-      if (staffRes.ok) {
-        const data = await staffRes.json();
-        setAssignModal(prev => prev ? { ...prev, results: data, searching: false } : null);
-      } else {
+      } catch {
         setAssignModal(prev => prev ? { ...prev, results: [], searching: false } : null);
       }
-    } catch {
-      setAssignModal(prev => prev ? { ...prev, results: [], searching: false } : null);
-    }
+    }, 400);
   }
 
   async function handleAssignSubmit() {
@@ -133,9 +132,18 @@ export default function LandlordMaintenancePage() {
     }
   }
 
-  const filtered = filterStatus === 'all'
-    ? requests
-    : requests.filter(r => r.status === filterStatus);
+  const filtered = requests
+    .filter(r => filterStatus === 'all' || r.status === filterStatus)
+    .filter(r => {
+      const q = search.toLowerCase();
+      return (
+        r.title.toLowerCase().includes(q) ||
+        r.category.toLowerCase().includes(q) ||
+        r.tenant?.email?.toLowerCase().includes(q) ||
+        r.tenant?.full_name?.toLowerCase().includes(q) ||
+        r.status.toLowerCase().includes(q)
+      );
+    });
 
   if (loading) return <div className="page-loading">Loading maintenance requests...</div>;
 
@@ -146,7 +154,6 @@ export default function LandlordMaintenancePage() {
           <h1 className="page-title">Maintenance Requests</h1>
           <p className="page-subtitle">{requests.length} total requests</p>
         </div>
-        {/* Filter */}
         <select
           className="form-input"
           style={{ width: 'auto' }}
@@ -160,9 +167,20 @@ export default function LandlordMaintenancePage() {
         </select>
       </div>
 
+      {/* Search */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          className="form-input search-input"
+          placeholder="Search by title, category, tenant..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
       {filtered.length === 0 ? (
         <div className="empty-state">
-          <p>{filterStatus === 'all' ? 'No maintenance requests yet.' : `No ${filterStatus.replace('_', ' ')} requests.`}</p>
+          <p>{search ? 'No requests match your search.' : 'No maintenance requests yet.'}</p>
         </div>
       ) : (
         <div className="card-list">
@@ -195,7 +213,6 @@ export default function LandlordMaintenancePage() {
                 <div className="maintenance-card-body">
                   <p className="maintenance-desc">{req.description}</p>
 
-                  {/* Update controls */}
                   <div className="form-row" style={{ marginTop: '12px' }}>
                     <div className="form-group">
                       <label className="form-label">Status</label>
@@ -225,7 +242,6 @@ export default function LandlordMaintenancePage() {
                     </div>
                   </div>
 
-                  {/* Existing assignments */}
                   {req.assignments.length > 0 && (
                     <div className="maintenance-notes">
                       <span className="notes-label">Assigned staff:</span>
@@ -247,6 +263,7 @@ export default function LandlordMaintenancePage() {
                       requestId: req.id,
                       staffEmail: '',
                       staffId: '',
+                      staffName: '',
                       notes: '',
                       results: [],
                       searching: false,
@@ -277,16 +294,12 @@ export default function LandlordMaintenancePage() {
                 {assignModal.staffId ? (
                   <div className="selected-tenant">
                     <div className="selected-tenant-info">
-                      <span className="tenant-name">
-                        {assignModal.results.find(r => r.id === assignModal.staffId)?.full_name || 'Staff member'}
-                      </span>
-                      <span className="tenant-email">
-                        {assignModal.results.find(r => r.id === assignModal.staffId)?.email}
-                      </span>
+                      <span className="tenant-name">{assignModal.staffName || 'Staff member'}</span>
+                      <span className="tenant-email">{assignModal.staffEmail}</span>
                     </div>
                     <button
                       className="btn-ghost-small"
-                      onClick={() => setAssignModal({ ...assignModal, staffId: '', staffEmail: '', results: [] })}
+                      onClick={() => setAssignModal({ ...assignModal, staffId: '', staffName: '', staffEmail: '', results: [] })}
                     >
                       Change
                     </button>
@@ -298,21 +311,25 @@ export default function LandlordMaintenancePage() {
                       className="form-input"
                       placeholder="Type staff email..."
                       value={assignModal.staffEmail}
-                      onChange={e => {
-                        const val = e.target.value;
-                        setAssignModal({ ...assignModal, staffEmail: val });
-                        if (val.length >= 2) handleStaffSearch(val);
-                        else setAssignModal(prev => prev ? { ...prev, staffEmail: val, results: [] } : null);
-                      }}
+                      onChange={e => handleStaffEmailChange(e.target.value)}
                     />
                     {assignModal.searching && <p className="search-hint">Searching...</p>}
+                    {!assignModal.searching && assignModal.staffEmail.length >= 2 && assignModal.results.length === 0 && (
+                      <p className="search-hint">No maintenance staff found</p>
+                    )}
                     {assignModal.results.length > 0 && (
                       <div className="search-results">
                         {assignModal.results.map(s => (
                           <div
                             key={s.id}
                             className="search-result-item"
-                            onClick={() => setAssignModal({ ...assignModal, staffId: s.id })}
+                            onClick={() => setAssignModal({
+                              ...assignModal,
+                              staffId: s.id,
+                              staffName: s.full_name || s.email,
+                              staffEmail: s.email,
+                              results: [],
+                            })}
                           >
                             <span className="tenant-name">{s.full_name || 'No name'}</span>
                             <span className="tenant-email">{s.email}</span>
