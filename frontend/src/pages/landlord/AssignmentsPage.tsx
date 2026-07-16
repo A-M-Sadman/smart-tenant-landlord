@@ -8,6 +8,7 @@ export default function AssignmentsPage() {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Assignment | null>(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchAssignments();
@@ -59,6 +60,16 @@ export default function AssignmentsPage() {
     return `badge ${map[status] || 'badge-secondary'}`;
   }
 
+  const filtered = assignments.filter(a => {
+    const q = search.toLowerCase();
+    return (
+      a.tenant?.email?.toLowerCase().includes(q) ||
+      a.tenant?.full_name?.toLowerCase().includes(q) ||
+      a.unit?.unit_number?.toLowerCase().includes(q) ||
+      a.status.toLowerCase().includes(q)
+    );
+  });
+
   if (loading) return <div className="page-loading">Loading assignments...</div>;
   if (error) return <div className="page-error">{error}</div>;
 
@@ -69,9 +80,20 @@ export default function AssignmentsPage() {
         <p className="page-subtitle">{assignments.length} total assignment{assignments.length !== 1 ? 's' : ''}</p>
       </div>
 
-      {assignments.length === 0 ? (
+      {/* Search */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          className="form-input search-input"
+          placeholder="Search by tenant name, email, unit or status..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="empty-state">
-          <p>No assignments yet. Assign tenants from the Properties page.</p>
+          <p>{search ? 'No assignments match your search.' : 'No assignments yet. Assign tenants from the Properties page.'}</p>
         </div>
       ) : (
         <div className="table-container">
@@ -87,7 +109,7 @@ export default function AssignmentsPage() {
               </tr>
             </thead>
             <tbody>
-              {assignments.map(a => (
+              {filtered.map(a => (
                 <tr key={a.id}>
                   <td>
                     <div className="tenant-cell">
@@ -130,7 +152,6 @@ export default function AssignmentsPage() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {confirmDelete && (
         <div className="modal-overlay" onClick={() => setConfirmDelete(null)}>
           <div className="modal-content modal-sm" onClick={e => e.stopPropagation()}>
@@ -141,14 +162,11 @@ export default function AssignmentsPage() {
             <div className="modal-body">
               <p>
                 Are you sure you want to delete the assignment for{' '}
-                <strong>{confirmDelete.tenant?.email}</strong>?
-                This cannot be undone.
+                <strong>{confirmDelete.tenant?.email}</strong>? This cannot be undone.
               </p>
             </div>
             <div className="modal-footer">
-              <button className="btn-secondary" onClick={() => setConfirmDelete(null)}>
-                Cancel
-              </button>
+              <button className="btn-secondary" onClick={() => setConfirmDelete(null)}>Cancel</button>
               <button
                 className="btn-danger"
                 onClick={() => handleDelete(confirmDelete.id)}

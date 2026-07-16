@@ -17,6 +17,7 @@ import StaffLayout from './components/staff/StaffLayout';
 import StaffDashboardPage from './pages/staff/StaffDashboardPage';
 import TenantMaintenancePage from './pages/tenant/TenantMaintenancePage';
 import LandlordMaintenancePage from './pages/landlord/LandlordMaintenancePage';
+import AgreementsPage from './pages/landlord/AgreementsPage';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="properties/:id/units/:unitId/edit" element={<UnitForm />} />
             <Route path="assignments" element={<AssignmentsPage />} />
             <Route path="maintenance" element={<LandlordMaintenancePage />} />
+            <Route path="agreements" element={<AgreementsPage />} />
           </Route>
 
           {/* Tenant routes */}

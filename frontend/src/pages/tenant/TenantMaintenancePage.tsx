@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { MaintenanceRequest, MaintenanceCategory, RequestPriority } from '../../types/maintenance';
 import { createMaintenanceRequest, getMyRequests } from '../../api/maintenance';
-import { useAuth } from '../../context/AuthContext';
 
 const CATEGORIES: MaintenanceCategory[] = [
   'plumbing', 'electrical', 'hvac', 'appliance', 'structural', 'other',
@@ -24,40 +23,57 @@ const PRIORITY_BADGE: Record<string, string> = {
   urgent: 'badge-danger',
 };
 
+interface ActiveAssignment {
+  id: string;
+  unit_id: string;
+  unit: { id: string; unit_number: string } | null;
+}
+
 export default function TenantMaintenancePage() {
-  const { user } = useAuth();
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeAssignment, setActiveAssignment] = useState<ActiveAssignment | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [expanded, setExpanded] = useState<string | null>(null);
 
   // Form state
-  const [unitId, setUnitId] = useState('');
   const [category, setCategory] = useState<MaintenanceCategory>('plumbing');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<RequestPriority>('medium');
 
   useEffect(() => {
-    fetchRequests();
+    async function init() {
+      setLoading(true);
+      try {
+        const [reqData, assignmentData] = await Promise.all([
+          getMyRequests(),
+          fetchActiveAssignment(),
+        ]);
+        setRequests(reqData);
+        setActiveAssignment(assignmentData);
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
   }, []);
 
-  async function fetchRequests() {
-    setLoading(true);
+  async function fetchActiveAssignment(): Promise<ActiveAssignment | null> {
     try {
-      const data = await getMyRequests();
-      setRequests(data);
+      const res = await fetch('http://localhost:8000/api/v1/assignments/mine', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+      });
+      if (!res.ok) return null;
+      return await res.json();
     } catch {
-      // silently fail — empty state shown
-    } finally {
-      setLoading(false);
+      return null;
     }
   }
 
   function resetForm() {
-    setUnitId('');
     setCategory('plumbing');
     setTitle('');
     setDescription('');
@@ -66,14 +82,14 @@ export default function TenantMaintenancePage() {
   }
 
   async function handleSubmit() {
-    if (!unitId.trim()) return setFormError('Please enter your Unit ID');
+    if (!activeAssignment) return setFormError('You do not have an active unit assignment');
     if (!title.trim()) return setFormError('Please enter a title');
     if (!description.trim()) return setFormError('Please enter a description');
     setFormError('');
     setSubmitting(true);
     try {
       const newReq = await createMaintenanceRequest({
-        unit_id: unitId.trim(),
+        unit_id: activeAssignment.unit_id,
         category,
         title: title.trim(),
         description: description.trim(),
@@ -96,15 +112,30 @@ export default function TenantMaintenancePage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Maintenance Requests</h1>
-          <p className="page-subtitle">{requests.length} total request{requests.length !== 1 ? 's' : ''}</p>
+          {activeAssignment?.unit && (
+            <p className="page-subtitle">Unit {activeAssignment.unit.unit_number}</p>
+          )}
         </div>
-        <button className="btn-primary" onClick={() => { setShowForm(true); resetForm(); }}>
+        <button
+          className="btn-primary"
+          onClick={() => { setShowForm(true); resetForm(); }}
+          disabled={!activeAssignment}
+          title={!activeAssignment ? 'You need an active unit assignment to submit a request' : ''}
+        >
           + New Request
         </button>
       </div>
 
+      {!activeAssignment && (
+        <div className="maintenance-notes" style={{ marginBottom: '16px' }}>
+          <p className="maintenance-meta-text">
+            ⚠️ You don't have an active unit assignment. Contact your landlord to be assigned to a unit before submitting maintenance requests.
+          </p>
+        </div>
+      )}
+
       {/* Submit form modal */}
-      {showForm && (
+      {showForm && activeAssignment && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
@@ -112,17 +143,19 @@ export default function TenantMaintenancePage() {
               <button className="modal-close" onClick={() => setShowForm(false)}>×</button>
             </div>
             <div className="modal-body">
+              {/* Auto-filled unit info */}
               <div className="form-group">
-                <label className="form-label">Unit ID *</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Paste your unit ID"
-                  value={unitId}
-                  onChange={e => setUnitId(e.target.value)}
-                />
-                <p className="search-hint">Your unit ID is provided by your landlord</p>
+                <label className="form-label">Unit</label>
+                <div className="selected-tenant">
+                  <div className="selected-tenant-info">
+                    <span className="tenant-name">
+                      Unit {activeAssignment.unit?.unit_number || activeAssignment.unit_id}
+                    </span>
+                    <span className="tenant-email">Your assigned unit</span>
+                  </div>
+                </div>
               </div>
+
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Category *</label>
@@ -153,6 +186,7 @@ export default function TenantMaintenancePage() {
                   </select>
                 </div>
               </div>
+
               <div className="form-group">
                 <label className="form-label">Title *</label>
                 <input
@@ -163,6 +197,7 @@ export default function TenantMaintenancePage() {
                   onChange={e => setTitle(e.target.value)}
                 />
               </div>
+
               <div className="form-group">
                 <label className="form-label">Description *</label>
                 <textarea
@@ -173,6 +208,7 @@ export default function TenantMaintenancePage() {
                   rows={4}
                 />
               </div>
+
               {formError && <p className="form-error">{formError}</p>}
             </div>
             <div className="modal-footer">

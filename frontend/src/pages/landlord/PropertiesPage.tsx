@@ -7,6 +7,7 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +21,13 @@ export default function PropertiesPage() {
     setDeleteId(null);
   };
 
+  const filtered = properties.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase()) ||
+    p.city.toLowerCase().includes(search.toLowerCase()) ||
+    p.district.toLowerCase().includes(search.toLowerCase()) ||
+    p.address.toLowerCase().includes(search.toLowerCase())
+  );
+
   if (loading) return <div className="page"><p>Loading…</p></div>;
 
   return (
@@ -27,20 +35,31 @@ export default function PropertiesPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Properties</h1>
-          <p className="page-subtitle">{properties.length} propert{properties.length === 1 ? "y" : "ies"}</p>
+          <p className="page-subtitle">{filtered.length} propert{filtered.length === 1 ? "y" : "ies"}</p>
         </div>
         <button className="btn-primary" onClick={() => navigate("/landlord/properties/new")}>
           + Add Property
         </button>
       </div>
 
-      {properties.length === 0 ? (
+      {/* Search */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          className="form-input search-input"
+          placeholder="Search by name, city, district or address..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="empty-state">
-          <p>No properties yet. Add your first one.</p>
+          <p>{search ? 'No properties match your search.' : 'No properties yet. Add your first one.'}</p>
         </div>
       ) : (
         <div className="property-grid">
-          {properties.map((p) => (
+          {filtered.map((p) => (
             <div key={p.id} className="property-card">
               <div className="property-card-header">
                 <h3>{p.name}</h3>
@@ -72,7 +91,6 @@ export default function PropertiesPage() {
         </div>
       )}
 
-      {/* Delete confirmation dialog */}
       {deleteId && (
         <div className="modal-overlay">
           <div className="modal">

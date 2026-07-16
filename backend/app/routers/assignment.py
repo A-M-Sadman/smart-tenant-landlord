@@ -1,7 +1,7 @@
 import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -28,6 +28,13 @@ def landlord_user(current_user: User = Depends(get_current_user)) -> User:
 
 
 # ── Tenant search (must be before /assignments to avoid route conflict) ──────
+def tenant_user(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != UserRole.tenant:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Tenants only",
+        )
+    return current_user
 
 
 @router.get("/tenants/search", response_model=List[TenantSearchResult])
@@ -59,6 +66,24 @@ def list_assignments(
 ):
     return assignment_service.get_assignments(db, current_user.id)
 
+
+@router.get("/assignments/mine", response_model=Optional[AssignmentResponse])
+def get_my_active_assignment(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(tenant_user),  # ← must be tenant_user, NOT landlord_user
+):
+    from app.models.assignment import TenantAssignment, AssignmentStatus
+    from sqlalchemy.orm import joinedload
+    assignment = (
+        db.query(TenantAssignment)
+        .filter(
+            TenantAssignment.tenant_id == current_user.id,
+            TenantAssignment.status == AssignmentStatus.active,
+        )
+        .options(joinedload(TenantAssignment.unit))
+        .first()
+    )
+    return assignment
 
 @router.get("/assignments/{assignment_id}", response_model=AssignmentResponse)
 def get_assignment(
@@ -112,3 +137,5 @@ def get_unit_active_assignment(
 ):
     """Returns the current active assignment for a unit, or null."""
     return assignment_service.get_unit_active_assignment(db, unit_id, current_user.id)
+
+
