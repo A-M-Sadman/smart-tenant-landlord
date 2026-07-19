@@ -77,3 +77,23 @@ export async function deleteAgreement(id: string): Promise<void> {
     throw new Error(err.detail || 'Failed to delete agreement');
   }
 }
+
+// Add these two functions to the bottom of src/api/agreement.ts
+
+export async function getMyAgreements(): Promise<any[]> {
+  const res = await fetch(`${BASE}/my`, { headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch your agreements');
+  return res.json();
+}
+
+export async function acceptAgreement(id: string): Promise<any> {
+  const res = await fetch(`${BASE}/${id}/accept`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || 'Failed to accept agreement');
+  }
+  return res.json();
+}
