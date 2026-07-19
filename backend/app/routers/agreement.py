@@ -24,6 +24,13 @@ def landlord_user(current_user: User = Depends(get_current_user)) -> User:
         )
     return current_user
 
+def tenant_user(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != UserRole.tenant:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only tenants can access this resource",
+        )
+    return current_user
 
 @router.post("", response_model=AgreementResponse, status_code=201)
 def create_agreement(
@@ -41,6 +48,23 @@ def list_agreements(
 ):
     return agreement_service.get_agreements(db, current_user.id)
 
+@router.get("/my", response_model=List[AgreementResponse])
+def get_my_agreements(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(tenant_user),
+):
+    """Tenant views their own agreements."""
+    return agreement_service.get_tenant_agreements(db, current_user.id)
+
+
+@router.post("/{agreement_id}/accept", response_model=AgreementResponse)
+def accept_agreement(
+    agreement_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(tenant_user),
+):
+    """Tenant accepts an active agreement."""
+    return agreement_service.accept_agreement(db, agreement_id, current_user.id)
 
 @router.get("/assignment/{assignment_id}", response_model=Optional[AgreementResponse])
 def get_by_assignment(
@@ -86,3 +110,14 @@ def delete_agreement(
     current_user: User = Depends(landlord_user),
 ):
     agreement_service.delete_agreement(db, agreement_id, current_user.id)
+
+    # Add these to app/routers/agreement.py
+
+# First add the tenant_user dependency after the existing landlord_user dependency:
+
+
+
+
+# Then add these two endpoints BEFORE the /{agreement_id} routes
+# to avoid route matching conflicts:
+
