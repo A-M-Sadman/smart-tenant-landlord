@@ -1,10 +1,12 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
+
 const navItems = [
   { to: "/tenant/dashboard", label: "Dashboard", icon: "⊞" },
   { to: "/tenant/profile", label: "My Profile", icon: "👤" },
   { to: "/tenant/maintenance", label: "Maintenance", icon: "🔧" },
+  { to: "/tenant/agreements", label: "Agreements", icon: "📄" },
 ];
 
 export default function TenantLayout() {

@@ -18,6 +18,7 @@ import StaffDashboardPage from './pages/staff/StaffDashboardPage';
 import TenantMaintenancePage from './pages/tenant/TenantMaintenancePage';
 import LandlordMaintenancePage from './pages/landlord/LandlordMaintenancePage';
 import AgreementsPage from './pages/landlord/AgreementsPage';
+import TenantAgreementsPage from './pages/tenant/TenantAgreementsPage';
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
             <Route path="dashboard" element={<TenantHome />} />
             <Route path="profile" element={<TenantProfilePage />} />
             <Route path="maintenance" element={<TenantMaintenancePage />} />
+            <Route path="agreements" element={<TenantAgreementsPage />} />
           </Route>
 
           {/* Maintenance placeholder */}
