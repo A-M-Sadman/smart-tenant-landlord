@@ -6,6 +6,7 @@ from pydantic import BaseModel, field_validator
 from app.models.agreement import AgreementStatus
 
 
+
 class UserInfo(BaseModel):
     id: uuid.UUID
     email: str
@@ -71,6 +72,7 @@ class AgreementResponse(BaseModel):
     landlord: Optional[UserInfo] = None
     tenant: Optional[UserInfo] = None
     assignment: Optional[AssignmentInfo] = None
+    tenant_accepted_at: Optional[datetime] = None
 
     @field_validator("id", "assignment_id", "landlord_id", "tenant_id", mode="before")
     @classmethod

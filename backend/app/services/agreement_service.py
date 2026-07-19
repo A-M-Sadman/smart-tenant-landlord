@@ -203,3 +203,47 @@ def delete_agreement(
 
     db.delete(agreement)
     db.commit()
+    
+def get_tenant_agreements(
+    db: Session, tenant_id: uuid.UUID
+) -> List[RentalAgreement]:
+    return (
+        db.query(RentalAgreement)
+        .filter(RentalAgreement.tenant_id == tenant_id)
+        .options(
+            joinedload(RentalAgreement.landlord),
+            joinedload(RentalAgreement.tenant),
+            joinedload(RentalAgreement.assignment),
+        )
+        .order_by(RentalAgreement.created_at.desc())
+        .all()
+    )
+
+
+def accept_agreement(
+    db: Session, agreement_id: uuid.UUID, tenant_id: uuid.UUID
+) -> RentalAgreement:
+    agreement = _load_agreement(db, agreement_id)
+
+    if str(agreement.tenant_id) != str(tenant_id):
+        raise HTTPException(
+            status_code=403,
+            detail="This agreement does not belong to you",
+        )
+
+    if agreement.status != AgreementStatus.active:
+        raise HTTPException(
+            status_code=400,
+            detail="Only active agreements can be accepted",
+        )
+
+    if agreement.tenant_accepted_at is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Agreement has already been accepted",
+        )
+
+    agreement.tenant_accepted_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(agreement)
+    return _load_agreement(db, agreement.id)
