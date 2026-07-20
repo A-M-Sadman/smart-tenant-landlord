@@ -33,3 +33,4 @@ class Unit(Base):
     assignments = relationship("TenantAssignment", back_populates="unit", cascade="all, delete-orphan")
     maintenance_requests = relationship("MaintenanceRequest", back_populates="unit", cascade="all, delete-orphan")
     complaints = relationship("Complaint", back_populates="unit", cascade="all, delete-orphan")
+    
