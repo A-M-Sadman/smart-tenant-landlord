@@ -10,6 +10,7 @@ from app.routers import assignment
 from app.routers import maintenance
 from app.routers import agreement
 from app.routers import payment
+from app.routers import complaint
 
 
 # Create tables (dev only — use Alembic in prod)
@@ -39,6 +40,7 @@ app.include_router(assignment.router)
 app.include_router(maintenance.router)
 app.include_router(agreement.router)
 app.include_router(payment.router)
+app.include_router(complaint.router)
 
 @app.get("/")
 def root():
