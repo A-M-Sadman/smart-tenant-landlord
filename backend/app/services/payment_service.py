@@ -184,3 +184,30 @@ def get_tenant_payments(
         .order_by(RentPayment.due_date.desc())
         .all()
     )
+
+def tenant_pay(
+    db: Session,
+    payment_id: uuid.UUID,
+    data: PaymentUpdate,
+    tenant_id: uuid.UUID,
+) -> RentPayment:
+    payment = _load_payment(db, payment_id)
+
+    if str(payment.tenant_id) != str(tenant_id):
+        raise HTTPException(status_code=403, detail="This payment does not belong to you")
+
+    if payment.status == PaymentStatus.paid:
+        raise HTTPException(status_code=400, detail="This payment has already been paid")
+
+    payment.status = PaymentStatus.paid
+    payment.paid_date = data.paid_date or date.today()
+    if data.payment_method is not None:
+        payment.payment_method = data.payment_method
+    if data.transaction_reference is not None:
+        payment.transaction_reference = data.transaction_reference
+    if data.notes is not None:
+        payment.notes = data.notes
+
+    db.commit()
+    db.refresh(payment)
+    return _load_payment(db, payment.id)

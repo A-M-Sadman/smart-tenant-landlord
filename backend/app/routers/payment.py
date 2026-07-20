@@ -95,3 +95,13 @@ def delete_payment(
     current_user: User = Depends(landlord_user),
 ):
     payment_service.delete_payment(db, payment_id, current_user.id)
+
+@router.post("/{payment_id}/pay", response_model=PaymentResponse)
+def pay_payment(
+    payment_id: uuid.UUID,
+    data: PaymentUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(tenant_user),
+):
+    """Tenant submits payment for a pending record."""
+    return payment_service.tenant_pay(db, payment_id, data, current_user.id)
