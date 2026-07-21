@@ -943,3 +943,29 @@
   border-radius: 8px;
   flex-wrap: wrap;
 }
+
+
+/* ── Complaint responses ─────────────────────────────────────── */
+
+.complaint-responses {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.complaint-response-item {
+  background: var(--hover-bg, #f9fafb);
+  border-left: 3px solid #6366f1;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.complaint-response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

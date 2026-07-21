@@ -21,6 +21,8 @@ import AgreementsPage from './pages/landlord/AgreementsPage';
 import TenantAgreementsPage from './pages/tenant/TenantAgreementsPage';
 import LandlordPaymentsPage from './pages/landlord/LandlordPaymentsPage';
 import TenantPaymentsPage from './pages/tenant/TenantPaymentsPage';
+import TenantComplaintsPage from './pages/tenant/TenantComplaintsPage';
+import LandlordComplaintsPage from './pages/landlord/LandlordComplaintsPage';
 
 function App() {
   return (
@@ -52,6 +54,7 @@ function App() {
             <Route path="maintenance" element={<LandlordMaintenancePage />} />
             <Route path="agreements" element={<AgreementsPage />} />
             <Route path="payments" element={<LandlordPaymentsPage />} />
+            <Route path="complaints" element={<LandlordComplaintsPage />} />
           </Route>
 
           {/* Tenant routes */}
@@ -69,6 +72,7 @@ function App() {
             <Route path="maintenance" element={<TenantMaintenancePage />} />
             <Route path="agreements" element={<TenantAgreementsPage />} />
             <Route path="payments" element={<TenantPaymentsPage />} />
+            <Route path="complaints" element={<TenantComplaintsPage />} />
           </Route>
 
           {/* Maintenance placeholder */}
