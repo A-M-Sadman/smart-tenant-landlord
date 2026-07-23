@@ -23,6 +23,10 @@ import LandlordPaymentsPage from './pages/landlord/LandlordPaymentsPage';
 import TenantPaymentsPage from './pages/tenant/TenantPaymentsPage';
 import TenantComplaintsPage from './pages/tenant/TenantComplaintsPage';
 import LandlordComplaintsPage from './pages/landlord/LandlordComplaintsPage';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminPropertiesPage from './pages/admin/AdminPropertiesPage'
 
 function App() {
   return (
@@ -32,6 +36,21 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          // Add new admin route group (same level as landlord/tenant):
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute roles={["admin"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboardPage />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="properties" element={<AdminPropertiesPage />} />
+          </Route>
 
           {/* Landlord routes */}
           <Route
