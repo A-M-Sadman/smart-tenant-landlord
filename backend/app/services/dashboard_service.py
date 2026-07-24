@@ -259,3 +259,114 @@ def get_platform_stats(db: Session) -> PlatformStats:
         total_open_maintenance=total_open_maintenance,
         total_pending_payments=total_pending_payments,
     )
+
+
+def get_tenant_dashboard(db: Session, tenant_id: uuid.UUID):
+    from app.models.assignment import TenantAssignment, AssignmentStatus
+    from app.models.agreement import RentalAgreement, AgreementStatus
+    from app.models.payment import RentPayment, PaymentStatus
+    from app.models.maintenance import MaintenanceRequest, RequestStatus
+    from app.models.complaint import Complaint, ComplaintStatus
+    from app.models.unit import Unit
+    from app.models.property import Property
+    from app.schemas.dashboard import TenantDashboardResponse
+
+    active_assignment = (
+        db.query(TenantAssignment)
+        .filter(
+            TenantAssignment.tenant_id == tenant_id,
+            TenantAssignment.status == AssignmentStatus.active,
+        )
+        .options(joinedload(TenantAssignment.unit))
+        .first()
+    )
+
+    unit_number = None
+    property_name = None
+    if active_assignment and active_assignment.unit:
+        unit_number = active_assignment.unit.unit_number
+        prop = db.query(Property).filter(
+            Property.id == active_assignment.unit.property_id
+        ).first()
+        if prop:
+            property_name = prop.name
+
+    agreement_ids = [
+        a.id for a in db.query(RentalAgreement.id).filter(
+            RentalAgreement.tenant_id == tenant_id
+        ).all()
+    ]
+
+    active_agreement = (
+        db.query(RentalAgreement)
+        .filter(
+            RentalAgreement.tenant_id == tenant_id,
+            RentalAgreement.status == AgreementStatus.active,
+        )
+        .first()
+    )
+
+    pending_payments = (
+        db.query(RentPayment)
+        .filter(
+            RentPayment.tenant_id == tenant_id,
+            RentPayment.status == PaymentStatus.pending,
+        )
+        .count()
+    )
+
+    unit_ids = [active_assignment.unit_id] if active_assignment else []
+
+    open_maintenance = (
+        db.query(MaintenanceRequest)
+        .filter(
+            MaintenanceRequest.tenant_id == tenant_id,
+            MaintenanceRequest.status == RequestStatus.open,
+        )
+        .count()
+    )
+
+    open_complaints = (
+        db.query(Complaint)
+        .filter(
+            Complaint.tenant_id == tenant_id,
+            Complaint.status == ComplaintStatus.open,
+        )
+        .count()
+    )
+
+    return TenantDashboardResponse(
+        pending_payments=pending_payments,
+        open_maintenance=open_maintenance,
+        open_complaints=open_complaints,
+        has_active_agreement=active_agreement is not None,
+        agreement_end_date=active_agreement.end_date if active_agreement else None,
+        unit_number=unit_number,
+        property_name=property_name,
+    )
+
+
+def get_staff_dashboard(db: Session, staff_id: uuid.UUID):
+    from app.models.maintenance import MaintenanceAssignment, StaffWorkStatus
+    from app.schemas.dashboard import StaffDashboardResponse
+
+    total_assigned = db.query(MaintenanceAssignment).filter(
+        MaintenanceAssignment.staff_id == staff_id,
+        MaintenanceAssignment.status == StaffWorkStatus.assigned,
+    ).count()
+
+    in_progress = db.query(MaintenanceAssignment).filter(
+        MaintenanceAssignment.staff_id == staff_id,
+        MaintenanceAssignment.status == StaffWorkStatus.in_progress,
+    ).count()
+
+    completed = db.query(MaintenanceAssignment).filter(
+        MaintenanceAssignment.staff_id == staff_id,
+        MaintenanceAssignment.status == StaffWorkStatus.completed,
+    ).count()
+
+    return StaffDashboardResponse(
+        total_assigned=total_assigned,
+        in_progress=in_progress,
+        completed=completed,
+    )
