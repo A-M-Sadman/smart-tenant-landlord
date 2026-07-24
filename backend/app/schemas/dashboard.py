@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, field_validator
 from app.models.user import UserRole
+from datetime import date
 
 
 # ── Landlord Dashboard ────────────────────────────────────────────────────────
@@ -84,3 +85,19 @@ class PlatformStats(BaseModel):
     total_open_complaints: int
     total_open_maintenance: int
     total_pending_payments: int
+
+
+
+class TenantDashboardResponse(BaseModel):
+    pending_payments: int
+    open_maintenance: int
+    open_complaints: int
+    has_active_agreement: bool
+    agreement_end_date: Optional[date] = None
+    unit_number: Optional[str] = None
+    property_name: Optional[str] = None
+
+class StaffDashboardResponse(BaseModel):
+    total_assigned: int
+    in_progress: int
+    completed: int

@@ -87,3 +87,29 @@ def get_platform_stats(
     current_user: User = Depends(admin_user),
 ):
     return dashboard_service.get_platform_stats(db)
+
+
+
+def tenant_user(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != UserRole.tenant:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Tenants only")
+    return current_user
+
+def staff_user(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != UserRole.maintenance_staff:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Staff only")
+    return current_user
+
+@router.get("/api/v1/dashboard/tenant")
+def get_tenant_dashboard(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(tenant_user),
+):
+    return dashboard_service.get_tenant_dashboard(db, current_user.id)
+
+@router.get("/api/v1/dashboard/staff")
+def get_staff_dashboard(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(staff_user),
+):
+    return dashboard_service.get_staff_dashboard(db, current_user.id)
