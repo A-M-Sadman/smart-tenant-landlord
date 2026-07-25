@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { PlatformStats } from '../../types/dashboard';
 import { getPlatformStats } from '../../api/dashboard';
 
 export default function AdminDashboardPage() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState<PlatformStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,28 +29,44 @@ export default function AdminDashboardPage() {
       {/* User stats */}
       <h2 className="section-title">Users</h2>
       <div className="stats-grid">
-        <div className="stat-card stat-card-blue">
+        <div
+          className="stat-card stat-card-blue"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/users')}
+        >
           <div className="stat-icon">👥</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_users}</span>
             <span className="stat-label">Total Users</span>
           </div>
         </div>
-        <div className="stat-card stat-card-purple">
+        <div
+          className="stat-card stat-card-purple"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/users')}
+        >
           <div className="stat-icon">🏢</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_landlords}</span>
             <span className="stat-label">Landlords</span>
           </div>
         </div>
-        <div className="stat-card stat-card-green">
+        <div
+          className="stat-card stat-card-green"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/users')}
+        >
           <div className="stat-icon">👤</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_tenants}</span>
             <span className="stat-label">Tenants</span>
           </div>
         </div>
-        <div className="stat-card stat-card-teal">
+        <div
+          className="stat-card stat-card-teal"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/users')}
+        >
           <div className="stat-icon">🔧</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_maintenance_staff}</span>
@@ -60,14 +78,22 @@ export default function AdminDashboardPage() {
       {/* Property stats */}
       <h2 className="section-title" style={{ marginTop: '32px' }}>Properties</h2>
       <div className="stats-grid">
-        <div className="stat-card stat-card-blue">
+        <div
+          className="stat-card stat-card-blue"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/properties')}
+        >
           <div className="stat-icon">🏠</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_properties}</span>
             <span className="stat-label">Properties</span>
           </div>
         </div>
-        <div className="stat-card stat-card-purple">
+        <div
+          className="stat-card stat-card-purple"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/admin/properties')}
+        >
           <div className="stat-icon">🚪</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_units}</span>

@@ -14,7 +14,6 @@ import TenantHome from "./pages/tenant/TenantHome";
 import TenantProfilePage from "./pages/tenant/TenantProfilePage";
 import AssignmentsPage from './pages/landlord/AssignmentsPage';
 import StaffLayout from './components/staff/StaffLayout';
-import StaffDashboardPage from './pages/staff/StaffDashboardPage';
 import TenantMaintenancePage from './pages/tenant/TenantMaintenancePage';
 import LandlordMaintenancePage from './pages/landlord/LandlordMaintenancePage';
 import AgreementsPage from './pages/landlord/AgreementsPage';
@@ -27,6 +26,9 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminPropertiesPage from './pages/admin/AdminPropertiesPage'
+import AnalyticsPage from './pages/landlord/AnalyticsPage';
+import StaffDashboardHome from './pages/staff/StaffDashboardHome';
+import StaffAssignmentsPage from './pages/staff/StaffAssignmentsPage';
 
 function App() {
   return (
@@ -74,6 +76,7 @@ function App() {
             <Route path="agreements" element={<AgreementsPage />} />
             <Route path="payments" element={<LandlordPaymentsPage />} />
             <Route path="complaints" element={<LandlordComplaintsPage />} />
+            <Route path="analytics" element={<AnalyticsPage />} />
           </Route>
 
           {/* Tenant routes */}
@@ -106,9 +109,9 @@ function App() {
             }
           />
           <Route path="/staff" element={<StaffLayout />}>
-            <Route path="dashboard" element={<StaffDashboardPage />} />
-            <Route path="assignments" element={<StaffDashboardPage />} />
-          </Route>  
+            <Route path="dashboard" element={<StaffDashboardHome />} />
+            <Route path="assignments" element={<StaffAssignmentsPage />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
