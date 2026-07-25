@@ -1146,3 +1146,43 @@
 .stat-card-warning {
   background: linear-gradient(135deg, #f59e0b, #d97706);
 }
+
+
+/* ── Chart cards ─────────────────────────────────────────────── */
+
+.chart-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.chart-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted, #6b7280);
+  margin: 0 0 20px;
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.chart-card-half {
+  margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}

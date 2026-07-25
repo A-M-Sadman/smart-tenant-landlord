@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { LandlordDashboard } from '../../types/dashboard';
 import { getLandlordDashboard } from '../../api/dashboard';
 import { useAuth } from '../../context/AuthContext';
@@ -11,6 +12,7 @@ const ACTIVITY_ICON: Record<string, string> = {
 
 export default function DashboardHome() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [dashboard, setDashboard] = useState<LandlordDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,28 +40,44 @@ export default function DashboardHome() {
 
       {/* Primary stats */}
       <div className="stats-grid">
-        <div className="stat-card stat-card-blue">
+        <div
+          className="stat-card stat-card-blue"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/properties')}
+        >
           <div className="stat-icon">🏢</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_properties}</span>
             <span className="stat-label">Properties</span>
           </div>
         </div>
-        <div className="stat-card stat-card-purple">
+        <div
+          className="stat-card stat-card-purple"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/properties')}
+        >
           <div className="stat-icon">🚪</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_units}</span>
             <span className="stat-label">Units</span>
           </div>
         </div>
-        <div className="stat-card stat-card-green">
+        <div
+          className="stat-card stat-card-green"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/assignments')}
+        >
           <div className="stat-icon">👤</div>
           <div className="stat-info">
             <span className="stat-value">{stats.total_tenants}</span>
             <span className="stat-label">Active Tenants</span>
           </div>
         </div>
-        <div className="stat-card stat-card-teal">
+        <div
+          className="stat-card stat-card-teal"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/assignments')}
+        >
           <div className="stat-icon">📋</div>
           <div className="stat-info">
             <span className="stat-value">{stats.open_assignments}</span>
@@ -70,35 +88,55 @@ export default function DashboardHome() {
 
       {/* Secondary stats */}
       <div className="stats-grid stats-grid-wide">
-        <div className={`stat-card-sm ${stats.open_maintenance_requests > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}>
+        <div
+          className={`stat-card-sm ${stats.open_maintenance_requests > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/maintenance')}
+        >
           <span className="stat-sm-icon">🔧</span>
           <div className="stat-sm-info">
             <span className="stat-sm-value">{stats.open_maintenance_requests}</span>
             <span className="stat-sm-label">Open Maintenance</span>
           </div>
         </div>
-        <div className={`stat-card-sm ${stats.pending_payments > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}>
+        <div
+          className={`stat-card-sm ${stats.pending_payments > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/payments')}
+        >
           <span className="stat-sm-icon">💰</span>
           <div className="stat-sm-info">
             <span className="stat-sm-value">{stats.pending_payments}</span>
             <span className="stat-sm-label">Pending Payments</span>
           </div>
         </div>
-        <div className={`stat-card-sm ${stats.overdue_payments > 0 ? 'stat-sm-danger' : 'stat-sm-neutral'}`}>
+        <div
+          className={`stat-card-sm ${stats.overdue_payments > 0 ? 'stat-sm-danger' : 'stat-sm-neutral'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/payments')}
+        >
           <span className="stat-sm-icon">⚠️</span>
           <div className="stat-sm-info">
             <span className="stat-sm-value">{stats.overdue_payments}</span>
             <span className="stat-sm-label">Overdue Payments</span>
           </div>
         </div>
-        <div className={`stat-card-sm ${stats.open_complaints > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}>
+        <div
+          className={`stat-card-sm ${stats.open_complaints > 0 ? 'stat-sm-warning' : 'stat-sm-neutral'}`}
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/complaints')}
+        >
           <span className="stat-sm-icon">📢</span>
           <div className="stat-sm-info">
             <span className="stat-sm-value">{stats.open_complaints}</span>
             <span className="stat-sm-label">Open Complaints</span>
           </div>
         </div>
-        <div className="stat-card-sm stat-sm-neutral">
+        <div
+          className="stat-card-sm stat-sm-neutral"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigate('/landlord/agreements')}
+        >
           <span className="stat-sm-icon">📄</span>
           <div className="stat-sm-info">
             <span className="stat-sm-value">{stats.open_agreements}</span>
@@ -111,9 +149,7 @@ export default function DashboardHome() {
       <div className="section" style={{ marginTop: '32px' }}>
         <h2 className="section-title">Recent Activity</h2>
         {recent_activity.length === 0 ? (
-          <div className="empty-state">
-            <p>No recent activity yet.</p>
-          </div>
+          <div className="empty-state"><p>No recent activity yet.</p></div>
         ) : (
           <div className="activity-list">
             {recent_activity.map((a, i) => (

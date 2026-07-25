@@ -9,6 +9,7 @@ const navItems = [
   { to: "/landlord/agreements", label: "Agreements", icon: "📄" },
   { to: "/landlord/payments", label: "Payments", icon: "💰" },
   { to: "/landlord/complaints", label: "Complaints", icon: "📢" },
+  { to: "/landlord/analytics", label: "Analytics", icon: "📈" },
 ];
 
 export default function DashboardLayout() {
