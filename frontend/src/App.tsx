@@ -29,6 +29,8 @@ import AdminPropertiesPage from './pages/admin/AdminPropertiesPage'
 import AnalyticsPage from './pages/landlord/AnalyticsPage';
 import StaffDashboardHome from './pages/staff/StaffDashboardHome';
 import StaffAssignmentsPage from './pages/staff/StaffAssignmentsPage';
+import NotificationsPage from './pages/shared/NotificationsPage';
+import NotificationPreferencesPage from './pages/shared/NotificationPreferencesPage';
 
 function App() {
   return (
@@ -77,6 +79,8 @@ function App() {
             <Route path="payments" element={<LandlordPaymentsPage />} />
             <Route path="complaints" element={<LandlordComplaintsPage />} />
             <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
           </Route>
 
           {/* Tenant routes */}
@@ -95,6 +99,8 @@ function App() {
             <Route path="agreements" element={<TenantAgreementsPage />} />
             <Route path="payments" element={<TenantPaymentsPage />} />
             <Route path="complaints" element={<TenantComplaintsPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
           </Route>
 
           {/* Maintenance placeholder */}
@@ -111,6 +117,8 @@ function App() {
           <Route path="/staff" element={<StaffLayout />}>
             <Route path="dashboard" element={<StaffDashboardHome />} />
             <Route path="assignments" element={<StaffAssignmentsPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
           </Route>
         </Routes>
       </AuthProvider>
