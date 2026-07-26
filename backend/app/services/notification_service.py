@@ -97,6 +97,7 @@ def send_notification(
     if not user:
         raise HTTPException(status_code=404, detail="Target user not found")
 
+    # Create notification for recipient
     notification = Notification(
         user_id=data.user_id,
         type=data.type,
@@ -106,6 +107,18 @@ def send_notification(
         related_entity_id=data.related_entity_id,
     )
     db.add(notification)
+
+    # Create a copy for the sender (landlord) so they can see what they sent
+    sender_copy = Notification(
+        user_id=sender_id,
+        type=data.type,
+        title=f"Sent: {data.title}",
+        message=f"To {user.full_name or user.email}: {data.message}",
+        related_entity_type=data.related_entity_type,
+        related_entity_id=data.related_entity_id,
+    )
+    db.add(sender_copy)
+
     db.commit()
     db.refresh(notification)
     return notification

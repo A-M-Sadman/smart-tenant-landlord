@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 const navItems = [
   { to: "/staff/dashboard", label: "Dashboard", icon: "⊞" },
   { to: "/staff/assignments", label: "My Assignments", icon: "🔧" },
+  { to: "/staff/notifications", label: "Notifications", icon: "🔔" },
 ];
 
 export default function StaffLayout() {
