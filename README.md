@@ -12,8 +12,8 @@ This repository section contains a complete end-to-end Requirements Engineering 
 
 | Member | Role | Ownership |
 |--------|------|-----------|
-| Sadman Abdullah (M1) | Full-Stack Developer | Auth, Property, Unit, Tenant Assignment, Rental Agreement, Rent Tracking, Landlord Dashboard, Admin Panel, Analytics |
-| Zainab Reem (M2) | Full-Stack Developer | Tenant Profile, Maintenance Management, Complaint Management, Notifications, Tenant Dashboard, Staff Dashboard |
+| A-M-Sadman (M1) | Full-Stack Developer | Auth, Property, Unit, Tenant Assignment, Rental Agreement, Rent Tracking, Landlord Dashboard, Admin Panel, Analytics |
+| Zainab-reem (M2) | Full-Stack Developer | Tenant Profile, Maintenance Management, Complaint Management, Notifications, Tenant Dashboard, Staff Dashboard |
 
 ## Software Development Life Cycle (SDLC) Flow
 
