@@ -1,6 +1,6 @@
 import type { Analytics } from '../types/analytics';
 
-const BASE = 'http://localhost:8000/api/v1/analytics';
+const BASE = '/api/v1/analytics';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

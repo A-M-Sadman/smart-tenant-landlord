@@ -1,6 +1,6 @@
 import type { Notification, NotificationPreference, NotificationPreferenceUpdate, NotificationSend } from '../types/notification';
 
-const BASE = 'http://localhost:8000/api/v1/notifications';
+const BASE = '/api/v1/notifications';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

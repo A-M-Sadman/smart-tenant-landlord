@@ -1,6 +1,6 @@
 import type { Payment, PaymentCreate, PaymentUpdate } from '../types/payment';
  
-const BASE = 'http://localhost:8000/api/v1/payments';
+const BASE = '/api/v1/payments';
  
 function authHeaders() {
   const token = localStorage.getItem('access_token');
