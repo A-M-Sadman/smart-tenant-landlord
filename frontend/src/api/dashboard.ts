@@ -1,6 +1,6 @@
 import type { LandlordDashboard, AdminUser, AdminProperty, PlatformStats } from '../types/dashboard';
 
-const BASE = 'http://localhost:8000/api/v1';
+const BASE = '/api/v1';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

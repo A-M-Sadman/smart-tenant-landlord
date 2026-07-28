@@ -7,7 +7,7 @@ import type {
     StaffAssignment,
 } from '../types/maintenance';
 
-const BASE = 'http://localhost:8000/api/v1/maintenance';
+const BASE = '/api/v1/maintenance';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

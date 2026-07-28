@@ -1,6 +1,6 @@
 import type { Agreement, AgreementCreate, AgreementUpdate } from '../types/agreement';
 
-const BASE = 'http://localhost:8000/api/v1/agreements';
+const BASE = '/api/v1/agreements';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

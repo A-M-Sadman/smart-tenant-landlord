@@ -1,6 +1,6 @@
 import type { Complaint, ComplaintCreate, ComplaintUpdate, ComplaintResponseCreate } from '../types/complaint';
 
-const BASE = 'http://localhost:8000/api/v1/complaints';
+const BASE = '/api/v1/complaints';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');
