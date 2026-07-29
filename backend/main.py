@@ -30,8 +30,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",    # Vite dev server
-        "https://your-app.vercel.app",    # add your Vercel URL once you know it
-        "*",    # temporary - remove after you know your Vercel URL
+        "https://smart-tenant-landlord.vercel.app",  
     ],  
     allow_credentials=True,
     allow_methods=["*"],

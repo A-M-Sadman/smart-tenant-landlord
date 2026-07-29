@@ -7,11 +7,11 @@ import { getAssignments } from '../../api/assignment';
 
 
 
-const STATUS_COLORS: Record<string, string> = {
-  vacant: "badge-green",
-  occupied: "badge-blue",
-  maintenance: "badge-orange",
-};
+// const STATUS_COLORS: Record<string, string> = {
+//   vacant: "badge-green",
+//   occupied: "badge-blue",
+//   maintenance: "badge-orange",
+// };
 
 export default function PropertyDetail() {
   const { id } = useParams();
