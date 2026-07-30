@@ -37,7 +37,7 @@ const STATUS_BADGE: Record<PaymentStatus, string> = {
 
 const METHODS: PaymentMethod[] = ['cash', 'bank_transfer', 'mobile_banking', 'other'];
 
-const BASE = 'http://localhost:8000/api/v1/payments';
+const BASE = '/api/v1/payments';
 
 function authHeaders() {
   const token = localStorage.getItem('access_token');

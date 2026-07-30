@@ -102,7 +102,7 @@ export default function LandlordMaintenancePage() {
     debounceRef.current = setTimeout(async () => {
       try {
         const res = await fetch(
-          `http://localhost:8000/api/v1/maintenance/staff/search?email=${encodeURIComponent(email)}`,
+          `/api/v1/maintenance/staff/search?email=${encodeURIComponent(email)}`,
           { headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` } }
         );
         if (res.ok) {
