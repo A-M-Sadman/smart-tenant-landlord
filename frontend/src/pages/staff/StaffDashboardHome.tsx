@@ -9,7 +9,7 @@ interface StaffDashboard {
 }
 
 async function getStaffDashboard(): Promise<StaffDashboard> {
-  const res = await fetch('http://localhost:8000/api/v1/dashboard/staff', {
+  const res = await fetch('/api/v1/dashboard/staff', {
     headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
   });
   if (!res.ok) throw new Error('Failed');
