@@ -1534,14 +1534,27 @@ html, body {
   .sidebar {
     width: 75vw;
     max-width: 280px;
-  }
-
-  .sidebar-footer {
-    padding-bottom: 2rem;
+    overflow-y: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .sidebar-nav {
+    flex: 1;
     overflow-y: auto;
-    padding-bottom: 1rem;
+    min-height: 0;
+  }
+
+  .sidebar-footer {
+    flex-shrink: 0;
+    padding: 1rem;
+    padding-bottom: 2.5rem;
+    border-top: 1px solid #313244;
+  }
+
+  .logout-btn {
+    display: block;
+    width: 100%;
   }
 }
