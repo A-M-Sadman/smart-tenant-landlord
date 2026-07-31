@@ -1470,3 +1470,78 @@
     flex-wrap: wrap;
   }
 }
+
+
+/* ── Fix mobile overflow ─────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stats-grid-wide {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+  }
+
+  .stat-icon {
+    font-size: 1.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  .quick-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .dashboard-main {
+    padding: 1rem;
+    padding-top: 4rem;
+    overflow-x: hidden;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 75vw;
+    max-width: 280px;
+  }
+
+  .sidebar-footer {
+    padding-bottom: 2rem;
+  }
+
+  .sidebar-nav {
+    overflow-y: auto;
+    padding-bottom: 1rem;
+  }
+}
