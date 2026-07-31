@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -16,15 +17,32 @@ const navItems = [
 export default function DashboardLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
     navigate("/login");
   };
 
+  const closeSidebar = () => setSidebarOpen(false);
+
   return (
     <div className="dashboard-layout">
-      <aside className="sidebar">
+      {/* Hamburger button - mobile only */}
+      <button
+        className="hamburger-btn"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? "✕" : "☰"}
+      </button>
+
+      {/* Overlay - mobile only */}
+      <div
+        className={`sidebar-overlay ${sidebarOpen ? "overlay-open" : ""}`}
+        onClick={closeSidebar}
+      />
+
+      <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
           <span className="brand-icon">🏠</span>
           <span className="brand-name">TenantLord</span>
@@ -35,6 +53,7 @@ export default function DashboardLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+              onClick={closeSidebar}
             >
               <span className="nav-icon">{item.icon}</span>
               <span>{item.label}</span>
@@ -52,6 +71,7 @@ export default function DashboardLayout() {
           <button className="logout-btn" onClick={handleLogout}>Sign out</button>
         </div>
       </aside>
+
       <main className="dashboard-main">
         <Outlet />
       </main>
