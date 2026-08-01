@@ -16,7 +16,7 @@ export default function TenantLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // Add at top of component
-  const [profile_image_url, setProfileImg] = useState<string | null>(null);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
 
 // Add useEffect to fetch profile image
   useEffect(() => {
@@ -69,7 +69,17 @@ export default function TenantLayout() {
             style={{ cursor: 'pointer' }}
             onClick={() => { navigate('/tenant/profile'); closeSidebar(); }}
           >
-            <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
+            <div className="user-avatar">
+              {profileImg ? (
+                <img
+                  src={profileImg}
+                  alt="Profile"
+                  className="avatar-img"
+                />
+              ) : (
+                user?.full_name?.[0]?.toUpperCase()
+              )}
+            </div>
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
               <span className="user-role">Tenant · View Profile</span>
