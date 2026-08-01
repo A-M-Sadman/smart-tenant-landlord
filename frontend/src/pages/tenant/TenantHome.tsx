@@ -13,7 +13,7 @@ interface TenantDashboard {
 }
 
 async function getTenantDashboard(): Promise<TenantDashboard> {
-  const res = await fetch('http://localhost:8000/api/v1/dashboard/tenant', {
+  const res = await fetch('/api/v1/dashboard/tenant', {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },

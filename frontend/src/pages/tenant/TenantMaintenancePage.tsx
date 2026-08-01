@@ -63,7 +63,7 @@ export default function TenantMaintenancePage() {
 
   async function fetchActiveAssignment(): Promise<ActiveAssignment | null> {
     try {
-      const res = await fetch('http://localhost:8000/api/v1/assignments/mine', {
+      const res = await fetch('/api/v1/assignments/mine', {
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });
       if (!res.ok) return null;
