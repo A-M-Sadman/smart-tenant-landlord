@@ -11,7 +11,6 @@ import PropertyDetail from "./pages/landlord/PropertyDetail";
 import UnitForm from "./pages/landlord/UnitForm";
 import TenantLayout from "./components/tenant/TenantLayout";
 import TenantHome from "./pages/tenant/TenantHome";
-import TenantProfilePage from "./pages/tenant/TenantProfilePage";
 import AssignmentsPage from './pages/landlord/AssignmentsPage';
 import StaffLayout from './components/staff/StaffLayout';
 import TenantMaintenancePage from './pages/tenant/TenantMaintenancePage';
