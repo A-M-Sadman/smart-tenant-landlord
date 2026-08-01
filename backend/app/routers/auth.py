@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import Optional
+
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -20,6 +23,9 @@ from app.services.auth_service import (
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+class UserProfileUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
@@ -43,4 +49,18 @@ def logout(data: RefreshRequest, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+@router.patch("/users/me", response_model=UserResponse)
+def update_me(
+    data: UserProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if data.full_name is not None:
+        current_user.full_name = data.full_name
+    if data.phone is not None:
+        current_user.phone = data.phone
+    db.commit()
+    db.refresh(current_user)
     return current_user

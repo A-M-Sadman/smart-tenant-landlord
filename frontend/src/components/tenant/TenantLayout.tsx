@@ -1,4 +1,4 @@
-import { useState ,useEffect } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -15,20 +15,6 @@ export default function TenantLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  // Add at top of component
-  const [profileImg, setProfileImg] = useState<string | null>(null);
-
-// Add useEffect to fetch profile image
-  useEffect(() => {
-  fetch('/api/v1/tenant/profile', {
-    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
-  })
-    .then(r => r.json())
-    .then(data => { if (data.profile_image_url) setProfileImg(data.profile_image_url); })
-    .catch(() => {});
-  }, []);
-
-
 
   const handleLogout = async () => {
     await logout();
@@ -39,17 +25,11 @@ export default function TenantLayout() {
 
   return (
     <div className="dashboard-layout">
-      <button
-        className="hamburger-btn"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
+      <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
         {sidebarOpen ? "✕" : "☰"}
       </button>
 
-      <div
-        className={`sidebar-overlay ${sidebarOpen ? "overlay-open" : ""}`}
-        onClick={closeSidebar}
-      />
+      <div className={`sidebar-overlay ${sidebarOpen ? "overlay-open" : ""}`} onClick={closeSidebar} />
 
       <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
@@ -75,19 +55,10 @@ export default function TenantLayout() {
             style={{ cursor: 'pointer' }}
             onClick={() => { navigate('/tenant/profile'); closeSidebar(); }}
           >
-            {profileImg ? (
-              <img
-                src={profileImg}
-                alt="Profile"
-                className="user-avatar"
-                style={{ objectFit: 'cover' }}
-              />
-            ) : (
-              <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
-            )}
+            <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
-              <span className="user-role">Tenant</span>
+              <span className="user-role">Tenant · View Profile</span>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout}>Sign out</button>
@@ -100,4 +71,3 @@ export default function TenantLayout() {
     </div>
   );
 }
-
