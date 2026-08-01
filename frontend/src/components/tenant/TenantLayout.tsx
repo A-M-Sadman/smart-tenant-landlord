@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
   { to: "/tenant/dashboard", label: "Dashboard", icon: "⊞" },
-  { to: "/tenant/profile", label: "My Profile", icon: "👤" },
   { to: "/tenant/maintenance", label: "Maintenance", icon: "🔧" },
   { to: "/tenant/agreements", label: "Agreements", icon: "📄" },
   { to: "/tenant/payments", label: "Payments", icon: "💰" },
@@ -16,6 +15,20 @@ export default function TenantLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Add at top of component
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+
+// Add useEffect to fetch profile image
+  useEffect(() => {
+  fetch('/api/v1/tenant/profile', {
+    headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
+  })
+    .then(r => r.json())
+    .then(data => { if (data.profile_image_url) setProfileImg(data.profile_image_url); })
+    .catch(() => {});
+  }, []);
+
+
 
   const handleLogout = async () => {
     await logout();
@@ -57,8 +70,21 @@ export default function TenantLayout() {
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="user-info">
-            <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
+          <div
+            className="user-info"
+            style={{ cursor: 'pointer' }}
+            onClick={() => { navigate('/tenant/profile'); closeSidebar(); }}
+          >
+            {profileImg ? (
+              <img
+                src={profileImg}
+                alt="Profile"
+                className="user-avatar"
+                style={{ objectFit: 'cover' }}
+              />
+            ) : (
+              <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
+            )}
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
               <span className="user-role">Tenant</span>
@@ -74,3 +100,4 @@ export default function TenantLayout() {
     </div>
   );
 }
+
