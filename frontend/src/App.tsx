@@ -31,6 +31,7 @@ import StaffDashboardHome from './pages/staff/StaffDashboardHome';
 import StaffAssignmentsPage from './pages/staff/StaffAssignmentsPage';
 import NotificationsPage from './pages/shared/NotificationsPage';
 import NotificationPreferencesPage from './pages/shared/NotificationPreferencesPage';
+import ProfilePage from './pages/shared/ProfilePage';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboardPage />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="properties" element={<AdminPropertiesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           {/* Landlord routes */}
@@ -81,6 +83,7 @@ function App() {
             <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           {/* Tenant routes */}
@@ -94,13 +97,14 @@ function App() {
           >
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<TenantHome />} />
-            <Route path="profile" element={<TenantProfilePage />} />
+            {/* <Route path="profile" element={<TenantProfilePage />} /> */}
             <Route path="maintenance" element={<TenantMaintenancePage />} />
             <Route path="agreements" element={<TenantAgreementsPage />} />
             <Route path="payments" element={<TenantPaymentsPage />} />
             <Route path="complaints" element={<TenantComplaintsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
 
           {/* Maintenance placeholder */}
@@ -119,6 +123,7 @@ function App() {
             <Route path="assignments" element={<StaffAssignmentsPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
             <Route path="notification-preferences" element={<NotificationPreferencesPage />} />
+            <Route path="profile" element={<ProfilePage />} />
           </Route>
         </Routes>
       </AuthProvider>
@@ -127,3 +132,5 @@ function App() {
 }
 
 export default App;
+
+

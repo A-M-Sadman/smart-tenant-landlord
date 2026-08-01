@@ -22,17 +22,11 @@ export default function AdminLayout() {
 
   return (
     <div className="dashboard-layout">
-      <button
-        className="hamburger-btn"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
+      <button className="hamburger-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
         {sidebarOpen ? "✕" : "☰"}
       </button>
 
-      <div
-        className={`sidebar-overlay ${sidebarOpen ? "overlay-open" : ""}`}
-        onClick={closeSidebar}
-      />
+      <div className={`sidebar-overlay ${sidebarOpen ? "overlay-open" : ""}`} onClick={closeSidebar} />
 
       <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
@@ -53,11 +47,15 @@ export default function AdminLayout() {
           ))}
         </nav>
         <div className="sidebar-footer">
-          <div className="user-info">
+          <div
+            className="user-info"
+            style={{ cursor: 'pointer' }}
+            onClick={() => { navigate('/admin/profile'); closeSidebar(); }}
+          >
             <div className="user-avatar">{user?.full_name?.[0]?.toUpperCase()}</div>
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
-              <span className="user-role">Admin</span>
+              <span className="user-role">Admin · View Profile</span>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout}>Sign out</button>
