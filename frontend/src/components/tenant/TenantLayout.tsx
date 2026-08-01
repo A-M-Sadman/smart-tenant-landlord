@@ -16,7 +16,7 @@ export default function TenantLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // Add at top of component
-  // const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
 
 // Add useEffect to fetch profile image
   useEffect(() => {
