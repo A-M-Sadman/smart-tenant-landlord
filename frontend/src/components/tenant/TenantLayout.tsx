@@ -1,4 +1,4 @@
-import { useState ,useEffect } from "react";
+import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -16,7 +16,7 @@ export default function TenantLayout() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   // Add at top of component
-  const [profileImg, setProfileImg] = useState<string | null>(null);
+  // const [profileImg, setProfileImg] = useState<string | null>(null);
 
 // Add useEffect to fetch profile image
   useEffect(() => {
@@ -70,15 +70,7 @@ export default function TenantLayout() {
             onClick={() => { navigate('/tenant/profile'); closeSidebar(); }}
           >
             <div className="user-avatar">
-              {profileImg ? (
-                <img
-                  src={profileImg}
-                  alt="Profile"
-                  className="avatar-img"
-                />
-              ) : (
-                user?.full_name?.[0]?.toUpperCase()
-              )}
+              {user?.full_name?.[0]?.toUpperCase()}
             </div>
             <div className="user-details">
               <span className="user-name">{user?.full_name}</span>
