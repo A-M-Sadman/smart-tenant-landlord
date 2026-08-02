@@ -48,7 +48,7 @@ export default function ProfilePage() {
           const tRes = await fetch('/api/v1/tenant/profile', { headers: authHeaders() });
           if (tRes.ok) {
             const tData = await tRes.json();
-            if (tData.profile_image_url) setProfileImg(tData.profile_image_url);
+            if (tData.profile_photo_url) setProfileImg(tData.profile_photo_url);
           }
         }
       } finally {
@@ -79,7 +79,7 @@ export default function ProfilePage() {
       const patchRes = await fetch('/api/v1/tenant/profile', {
         method: 'PATCH',
         headers: authHeaders(),
-        body: JSON.stringify({ profile_image_url: imageUrl }),
+        body: JSON.stringify({ profile_photo_url: imageUrl }),
       });
       console.log('Patch status:', patchRes.status);
       if (!patchRes.ok) throw new Error('Failed to save image');
