@@ -62,8 +62,8 @@ export default function ProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setError('');
     try {
-      // Upload to Cloudinary
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', CLOUDINARY_PRESET);
@@ -72,18 +72,20 @@ export default function ProfilePage() {
         { method: 'POST', body: formData }
       );
       const cloudData = await cloudRes.json();
+      console.log('Cloudinary response:', cloudData);
+      if (!cloudData.secure_url) throw new Error(cloudData.error?.message || 'Upload failed');
       const imageUrl = cloudData.secure_url;
-
-      // Update tenant profile with new image
-      await fetch('/api/v1/tenant/profile', {
+  
+      const patchRes = await fetch('/api/v1/tenant/profile', {
         method: 'PATCH',
         headers: authHeaders(),
         body: JSON.stringify({ profile_image_url: imageUrl }),
       });
-
+      console.log('Patch status:', patchRes.status);
+      if (!patchRes.ok) throw new Error('Failed to save image');
       setProfileImg(imageUrl);
-    } catch {
-      setError('Failed to upload image');
+    } catch (e: any) {
+      setError(e.message);
     } finally {
       setUploading(false);
     }
