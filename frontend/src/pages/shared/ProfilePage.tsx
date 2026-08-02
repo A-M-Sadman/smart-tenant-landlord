@@ -129,14 +129,9 @@ export default function ProfilePage() {
             <span className="detail-value">{profile.phone || '—'}</span>
           </div>
           <div className="profile-detail-item">
-            <span className="detail-label">Member Since</span>
-            <span className="detail-value">
-              {new Date(profile.created_at).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="profile-detail-item">
             <span className="detail-label">Account Status</span>
-            <span className={`badge ${profile.is_active ? 'badge-success' : 'badge-danger'}`}>
+            <span className={`badge ${profile.is_active ? 'badge-success' : 'badge-danger'}`}
+              style={{ display: 'inline-flex', width: 'fit-content' }}>
               {profile.is_active ? 'Active' : 'Inactive'}
             </span>
           </div>
