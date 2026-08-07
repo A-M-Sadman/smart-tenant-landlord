@@ -1544,9 +1544,23 @@ html, body {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
+    overflow-y: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
   }
 
   .sidebar-footer {
+    flex-shrink: 0;
+    padding: 1rem;
+    padding-bottom: 2.5rem;
+    border-top: 1px solid #313244;
     flex-shrink: 0;
     padding: 1rem;
     padding-bottom: 2.5rem;
@@ -1557,4 +1571,11 @@ html, body {
     display: block;
     width: 100%;
   }
+}
+
+.user-avatar img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
