@@ -26,6 +26,7 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 class UserProfileUpdate(BaseModel):
     full_name: Optional[str] = None
     phone: Optional[str] = None
+    profile_photo_url: Optional[str] = None
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
@@ -61,6 +62,8 @@ def update_me(
         current_user.full_name = data.full_name
     if data.phone is not None:
         current_user.phone = data.phone
+    if data.profile_photo_url is not None:
+        current_user.profile_photo_url = data.profile_photo_url
     db.commit()
     db.refresh(current_user)
     return current_user

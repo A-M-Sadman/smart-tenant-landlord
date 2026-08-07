@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from enum import Enum
@@ -41,6 +43,8 @@ class UserResponse(BaseModel):
     role: str
     phone: Optional[str] = None
     is_active: bool
+    profile_photo_url: Optional[str] = None
+    created_at: Optional[datetime] = None
 
     @field_validator("id", mode="before")
     @classmethod
