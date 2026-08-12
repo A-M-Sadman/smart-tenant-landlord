@@ -7,7 +7,7 @@ interface UserProfile {
   phone: string | null;
   role: string;
   is_active: boolean;
-  created_at: string;
+  profile_photo_url: string | null;
 }
 
 function authHeaders() {
@@ -18,7 +18,8 @@ function authHeaders() {
   };
 }
 
-const CLOUDINARY_CLOUD = 'dmk7xvsvx';
+const CLOUDINARY_CLOUD_TENANT = 'dnkcrvssk';
+const CLOUDINARY_CLOUD_OTHER = 'dmk7xvsvx';
 const CLOUDINARY_PRESET = 'smart_tenant_upload';
 
 export default function ProfilePage() {
@@ -43,13 +44,16 @@ export default function ProfilePage() {
         setFullName(data.full_name || '');
         setPhone(data.phone || '');
 
-        // Fetch profile image for tenants
+        // For tenants, fetch profile photo from tenant profile
         if (data.role === 'tenant') {
           const tRes = await fetch('/api/v1/tenant/profile', { headers: authHeaders() });
           if (tRes.ok) {
             const tData = await tRes.json();
             if (tData.profile_photo_url) setProfileImg(tData.profile_photo_url);
           }
+        } else {
+          // For other roles, use profile_photo_url from user model
+          if (data.profile_photo_url) setProfileImg(data.profile_photo_url);
         }
       } finally {
         setLoading(false);
@@ -60,29 +64,39 @@ export default function ProfilePage() {
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !profile) return;
     setUploading(true);
     setError('');
     try {
+      const cloudName = profile.role === 'tenant' ? CLOUDINARY_CLOUD_TENANT : CLOUDINARY_CLOUD_OTHER;
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', CLOUDINARY_PRESET);
       const cloudRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
         { method: 'POST', body: formData }
       );
       const cloudData = await cloudRes.json();
-      console.log('Cloudinary response:', cloudData);
       if (!cloudData.secure_url) throw new Error(cloudData.error?.message || 'Upload failed');
       const imageUrl = cloudData.secure_url;
-  
-      const patchRes = await fetch('/api/v1/tenant/profile', {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ profile_photo_url: imageUrl }),
-      });
-      console.log('Patch status:', patchRes.status);
-      if (!patchRes.ok) throw new Error('Failed to save image');
+
+      // Save to correct endpoint based on role
+      if (profile.role === 'tenant') {
+        const patchRes = await fetch('/api/v1/tenant/profile', {
+          method: 'PATCH',
+          headers: authHeaders(),
+          body: JSON.stringify({ profile_photo_url: imageUrl }),
+        });
+        if (!patchRes.ok) throw new Error('Failed to save image');
+      } else {
+        const patchRes = await fetch('/api/v1/auth/users/me', {
+          method: 'PATCH',
+          headers: authHeaders(),
+          body: JSON.stringify({ profile_photo_url: imageUrl }),
+        });
+        if (!patchRes.ok) throw new Error('Failed to save image');
+      }
+
       setProfileImg(imageUrl);
     } catch (e: any) {
       setError(e.message);
@@ -156,7 +170,6 @@ export default function ProfilePage() {
               <img
                 src={profileImg}
                 alt="Profile"
-                className="profile-avatar-img"
                 style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover' }}
               />
             ) : (
@@ -164,53 +177,48 @@ export default function ProfilePage() {
                 {profile.full_name?.[0]?.toUpperCase()}
               </div>
             )}
-            {/* Upload button for tenants */}
-            {profile.role === 'tenant' && (
-              <>
-                <button
-                  onClick={() => fileRef.current?.click()}
-                  disabled={uploading}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    right: 0,
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    background: '#6366f1',
-                    color: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.7rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  title="Change photo"
-                >
-                  {uploading ? '…' : '✎'}
-                </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleImageUpload}
-                />
-              </>
-            )}
+            {/* Upload button for all roles */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              title="Change photo"
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: '#6366f1',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.7rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {uploading ? '…' : '✎'}
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleImageUpload}
+            />
           </div>
           <div>
             <p className="profile-name">{profile.full_name}</p>
             <p className="profile-email">{profile.email}</p>
             {profile.phone && <p className="profile-phone">{profile.phone}</p>}
-            {profile.role === 'tenant' && (
-              <p style={{ fontSize: '0.78rem', color: '#6b7280', marginTop: '4px' }}>
-                Click the pencil icon to change your photo
-              </p>
-            )}
+            <p style={{ fontSize: '0.78rem', color: '#6b7280', marginTop: '4px' }}>
+              Click the pencil icon to change your photo
+            </p>
           </div>
         </div>
+        {error && <p className="form-error" style={{ marginTop: '8px' }}>{error}</p>}
       </div>
 
       {/* Details card */}
@@ -295,4 +303,4 @@ export default function ProfilePage() {
       )}
     </div>
   );
-}
+} 
