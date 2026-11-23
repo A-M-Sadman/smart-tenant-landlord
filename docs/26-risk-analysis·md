@@ -1,0 +1,46 @@
+# Risk Analysis
+
+This document identifies, assesses, and documents mitigation strategies for risks encountered and anticipated during the development and deployment of the Smart Tenant-Landlord Management Platform.
+
+---
+
+## Risk Register
+
+| ID | Risk | Category | Likelihood | Impact | Severity | Mitigation | Status |
+|----|------|----------|-----------|--------|----------|-----------|--------|
+| RSK-001 | Supabase free tier project auto-pauses after inactivity | Infrastructure | High | High | Critical | Monitor project health weekly; resume immediately if paused | Mitigated |
+| RSK-002 | Railway trial expired, taking the backend offline | Infrastructure | High | High | Critical | Migrated backend to Render free tier; `vercel.json` rewrite repointed | Mitigated |
+| RSK-003 | Special characters in database password breaking connection string | Technical | High | High | Critical | Use alphanumeric-only passwords; avoid `@`, `#`, `$` | Mitigated |
+| RSK-004 | Hardcoded `localhost` URLs breaking production frontend | Technical | High | High | Critical | Global search-replace before deployment; use relative `/api/v1/` paths | Mitigated |
+| RSK-005 | Vercel 404 on page refresh for React Router routes | Technical | High | Medium | High | Added SPA fallback rewrite in `vercel.json` | Mitigated |
+| RSK-006 | CORS blocking cross-origin API calls in production | Technical | Medium | High | High | Configured `allow_origins` in FastAPI CORS middleware with Vercel URL | Mitigated |
+| RSK-007 | Alembic migration conflicts from multiple heads | Technical | High | Medium | High | Run `alembic merge heads` before `upgrade head` | Mitigated |
+| RSK-008 | FastAPI route ordering — parameterized routes matching static strings | Technical | High | Medium | High | Static routes (`/my`, `/mine`) always placed before `/{id}` routes | Mitigated |
+| RSK-009 | Recharts causing duplicate React instance error | Technical | Medium | Medium | Medium | Added `resolve.dedupe: ['react', 'react-dom']` to `vite.config.ts` | Mitigated |
+| RSK-010 | `.env` file accidentally committed to GitHub | Security | Medium | Critical | Critical | Removed from tracking; added to `.gitignore`; all secrets rotated | Mitigated |
+| RSK-011 | JWT secret key too weak or exposed | Security | Low | Critical | High | Generated cryptographically random 48-byte key; stored only in Render and Vercel environment variables | Mitigated |
+| RSK-012 | Cloudinary upload preset not configured | Technical | Low | High | Medium | Unsigned preset `smart_tenant_upload` configured on both Cloudinary accounts | Mitigated |
+| RSK-013 | bcrypt version incompatibility with passlib | Technical | Low | High | Medium | Pinned `bcrypt==4.0.1` in requirements.txt | Mitigated |
+| RSK-014 | Pydantic v2 breaking changes | Technical | Medium | Medium | Medium | Used field validators and `from_attributes=True` throughout | Mitigated |
+| RSK-015 | Team member unavailability during critical weeks | Project | Low | High | Medium | Clear ownership split (M1/M2); independent branches per issue | Low risk |
+| RSK-016 | Feature scope creep beyond 8-week timeline | Project | Medium | Medium | Medium | Strict issue-based tracking on GitHub project board | Mitigated |
+| RSK-017 | Python version mismatch between team members | Technical | Medium | Medium | Medium | Both pinned to Python 3.11; `runtime.txt` pins 3.11.9 for the host | Mitigated |
+| RSK-018 | SQLAlchemy `metadata` reserved keyword conflict | Technical | Low | Medium | Low | Renamed `AuditLog` column to `extra_data` | Mitigated |
+| RSK-019 | University network blocking port 5432 for Supabase | Infrastructure | High | Medium | High | Switched to mobile hotspot for migration; session pooler used | Mitigated |
+| RSK-020 | Mobile layout breaking on small screens | UX | Medium | Medium | Medium | Added hamburger menu, responsive grids, and media queries | Mitigated |
+| RSK-021 | Render free instance sleeps after 15 min idle, causing 30–60 s cold start and "Request failed" on first load | Infrastructure | High | Medium | High | Warn users of first-load delay; open the site before demos; optional uptime pinger | Accepted |
+| RSK-022 | Supabase free project paused, causing pooler "tenant/user not found" errors | Infrastructure | Medium | High | High | Restore project from Supabase dashboard; check before demos and viva | Mitigated |
+
+---
+
+## Risk Summary
+
+| Severity | Count | Resolved |
+|----------|-------|---------|
+| Critical | 5 | 5 ✅ |
+| High | 8 | 7 ✅ (1 accepted) |
+| Medium | 8 | 8 ✅ |
+| Low | 1 | 1 ✅ |
+| **Total** | **22** | **21 resolved, 1 accepted** |
+
+All critical and high-severity risks have been mitigated or consciously accepted before final delivery.
