@@ -41,7 +41,7 @@ flowchart TD
 | Database | PostgreSQL |
 | Authentication | JWT (python-jose + passlib) |
 | File Storage | Cloudinary |
-| Deployment | Railway + Supabase (planned) |
+| Deployment | Render + Supabase (planned) |
 
 ## System Roles
 
